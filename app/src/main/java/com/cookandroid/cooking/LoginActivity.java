@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login); // 레이아웃 설정
 
-
         // Firebase Authentication 및 데이터베이스 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("Cooking");
@@ -44,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
         mEtEmail = findViewById(R.id.et_email);
         mEtPwd = findViewById(R.id.et_pwd);
         mCheckboxAutoLogin = findViewById(R.id.checkbox_auto_login);
+
+        // 자동 로그인 시도
+        tryAutoLogin();
 
         // 로그인 버튼에 대한 클릭 이벤트 처리
         Button btn_login = findViewById(R.id.login_login);
@@ -63,6 +65,9 @@ public class LoginActivity extends AppCompatActivity {
                             if (mCheckboxAutoLogin.isChecked()) {
                                 // 자동 로그인 설정이 체크되어 있으면 설정 저장
                                 saveAutoLoginSetting(true);
+                            } else {
+                                // 자동 로그인 설정이 체크되어 있지 않으면 설정 삭제
+                                saveAutoLoginSetting(false);
                             }
                             // 로그인 성공 시 MainActivity로 이동
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -87,9 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        // 자동 로그인 시도
-        tryAutoLogin();
     }
 
     // 자동 로그인 시도
