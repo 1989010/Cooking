@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#C3E0FF">
+
+    <!-- 메인 아이콘!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/main"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center">
+        </TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="자취 요리 마스터"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textSize="20dp">
+        </TextView>
+    </LinearLayout>
+
+    <!--카테고리별 음식아이콘!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp">
+
+        <!-- 한식 아이콘!-->
+        <Button
+            android:id="@+id/main_korean"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="70dp"
+            android:background="@drawable/korean">
+        </Button>
+
+        <!-- 양식 아이콘!-->
+        <Button
+            android:id="@+id/main_western"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="80dp"
+            android:background="@drawable/western">
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <!-- 한식 텍스트!-->
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="한     식"
+            android:textSize="20dp"
+            android:layout_marginLeft="83dp">
+        </TextView>
+
+        <!-- 양식 텍스트!-->
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="양     식"
+            android:textSize="20dp"
+            android:layout_marginLeft="83dp">
+        </TextView>
+    </LinearLayout>
+
+    <!--카테고리별 음식아이콘!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp">
+
+        <!-- 분식 아이콘!-->
+        <Button
+            android:id="@+id/main_snack_bar"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="70dp"
+            android:background="@drawable/snack_bar">
+        </Button>
+
+        <!-- 셀러드 아이콘!-->
+        <Button
+            android:id="@+id/main_salad"
+            android:layout_width="98dp"
+            android:layout_height="98dp"
+            android:layout_marginLeft="80dp"
+            android:background="@drawable/salad">
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <!-- 한식 텍스트!-->
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="분     식"
+            android:textSize="20dp"
+            android:layout_marginLeft="83dp">
+        </TextView>
+
+        <!-- 양식 텍스트!-->
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="셀 러 드"
+            android:textSize="20dp"
+            android:layout_marginLeft="83dp">
+        </TextView>
+    </LinearLayout>
+</LinearLayout>
