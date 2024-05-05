@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#C3E0FF">
+
+    <LinearLayout
+        android:layout_width="280dp"
+        android:layout_height="530dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <!-- 음식 사진 넣는 곳!-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <!-- 이미지 출력!-->
+            <ImageView
+                android:id="@+id/add_list_korean_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/camera"
+                android:layout_marginLeft="95dp">
+            </ImageView>
+
+            <!-- 이미지 선택버튼!-->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/add_list_korean_imgbut"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom|right"
+                android:textSize="10dp"
+                android:text="이미지 선택">
+            </androidx.appcompat.widget.AppCompatButton>
+        </LinearLayout>
+
+        <!-- 제목 및 레시피 등록!-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- 음식 제목!-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
+
+                <!-- 제목 !-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="제 목:"
+                    android:textSize="20sp">
+                </TextView>
+
+                <!-- 제목 입력 칸 !-->
+                <EditText
+                    android:id="@+id/add_list_korean_tittle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="요리의 제목을 입력해주세요"
+                    android:background="@null">
+                </EditText>
+            </LinearLayout>
+
+            <!-- 레시피 입력칸 자동으로 스크롤 됨!-->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@color/white"
+                android:layout_marginTop="20dp">
+
+                <EditText
+                    android:id="@+id/add_list_korean_recipe"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:background="@null"
+                    android:hint="레시피를 입력해 주세요.
+                                    예시)
+                                                    밥 1공기
+                                                    참기름 1스푼">
+                </EditText>
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <!-- 완료 버튼 !-->
+                <Button
+                    android:id="@+id/add_list_korean_commit"
+                    android:layout_width="133dp"
+                    android:layout_height="match_parent"
+                    android:text="완    료"
+                    android:textSize="24sp"
+                    android:layout_marginLeft="5dp">
+                </Button>
+
+                <!-- 취소 버튼 !-->
+                <Button
+                    android:id="@+id/add_list_korean_cancel"
+                    android:layout_width="133dp"
+                    android:layout_height="match_parent"
+                    android:text="취    소"
+                    android:textSize="24sp"
+                    android:layout_marginLeft="5dp">
+                </Button>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
