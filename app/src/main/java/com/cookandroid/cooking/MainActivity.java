@@ -1,23 +1,71 @@
 package com.cookandroid.cooking;
-
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.cookandroid.cooking.Koreanmain;
+import com.cookandroid.cooking.Westernmain;
+import com.cookandroid.cooking.Snack_barmain;
+import com.cookandroid.cooking.Saladmain;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Button koreanButton;
+    private Button westernButton;
+    private Button snackButton;
+    private Button saladButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 각 버튼 찾기
+        koreanButton = findViewById(R.id.main_korean);
+        westernButton = findViewById(R.id.main_western);
+        snackButton = findViewById(R.id.main_snack_bar);
+        saladButton = findViewById(R.id.main_salad);
+
+        // 각 버튼 클릭 리스너 설정
+        koreanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Koreanmain.class);
+                startActivity(intent);
+            }
+        });
+
+        westernButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Westernmain.class);
+                startActivity(intent);
+            }
+        });
+
+        snackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Snack_barmain.class);
+                startActivity(intent);
+            }
+        });
+
+        saladButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Saladmain.class);
+                startActivity(intent);
+            }
+        });
+
         // 액션바 표시 설정
-        ActionBar actionBar = getSupportActionBar();
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true); // 홈 아이콘 표시
             actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_logout_24); // 홈 아이콘 설정
@@ -43,5 +91,3 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
