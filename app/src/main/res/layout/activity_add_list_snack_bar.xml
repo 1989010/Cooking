@@ -90,6 +90,21 @@
                 </EditText>
             </ScrollView>
 
+            <!-- 게시글 목록 -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:id="@+id/snack_barmain_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- 여기에 게시글이 추가될 것입니다 -->
+                </LinearLayout>
+            </ScrollView>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

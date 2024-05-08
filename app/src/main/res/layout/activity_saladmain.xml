@@ -14,7 +14,7 @@
 
         <!-- 메인홈으로 가는 아이콘!-->
         <TextView
-            android:id="@+id/saladmian_main"
+            android:id="@+id/saladmain_main"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginLeft="155dp"
@@ -23,7 +23,7 @@
 
         <!-- 게시글 추가 아이콘 !-->
         <TextView
-            android:id="@+id/saladmian_addlist"
+            android:id="@+id/saladmain_addlist"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:background="@drawable/pluse"
@@ -54,7 +54,7 @@
             android:background="@color/white">
 
             <LinearLayout
-                android:id="@+id/saladmian_list"
+                android:id="@+id/saladmain_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">

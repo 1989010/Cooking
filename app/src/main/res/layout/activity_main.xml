@@ -125,9 +125,10 @@
         <TextView
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:text="셀 러 드"
+            android:text="샐 러 드"
             android:textSize="20dp"
             android:layout_marginLeft="83dp">
         </TextView>
     </LinearLayout>
+
 </LinearLayout>

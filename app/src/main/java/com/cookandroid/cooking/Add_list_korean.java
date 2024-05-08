@@ -60,6 +60,7 @@ public class Add_list_korean extends AppCompatActivity {
         cancelButton = findViewById(R.id.add_list_korean_cancel);
         koreanMainList = findViewById(R.id.koreanmain_list);
 
+
         // Set click listener for image select button
         findViewById(R.id.add_list_korean_imgbut).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +154,7 @@ public class Add_list_korean extends AppCompatActivity {
 
     // Add recipe to layout
     private void addRecipeToLayout(Recipe recipe, String recipeId) {
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 10, 0, 10);
@@ -168,24 +170,19 @@ public class Add_list_korean extends AppCompatActivity {
 
         // Recipe
         TextView recipeTextView = new TextView(this);
-        recipeTextView.setText(recipe.getRecipe());
         recipeLayout.addView(recipeTextView);
 
         koreanMainList.addView(recipeLayout);
     }
 
 
-
-
     // Clear input fields after adding recipe
     private void clearInputFields() {
         imageView.setImageResource(R.drawable.camera);
-        titleEditText.setText("");
-        recipeEditText.setText("");
-        imageUri = null;
+        // 버튼의 가시성 변경하지 않음
+        // imageUri를 null로 설정하지 않음
     }
 
-    // Add Korean recipe to Firebase
     private void addKoreanRecipe() {
         // Get current user ID
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -234,6 +231,10 @@ public class Add_list_korean extends AppCompatActivity {
                                     Toast.makeText(Add_list_korean.this, "게시글이 등록되었습니다", Toast.LENGTH_SHORT).show();
                                     addRecipeToLayout(koreanRecipe, recipeId); // Add recipe to layout
                                     clearInputFields(); // Clear input fields
+
+                                    Intent intent = new Intent(Add_list_korean.this, Koreanmain.class);
+                                    startActivity(intent);
+                                    finish(); // 현재 엑티비티 종료
                                 } else {
                                     Toast.makeText(Add_list_korean.this, "게시글 등록에 실패했습니다", Toast.LENGTH_SHORT).show();
                                 }
@@ -249,4 +250,5 @@ public class Add_list_korean extends AppCompatActivity {
                     }
                 });
     }
+
 }

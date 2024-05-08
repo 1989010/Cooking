@@ -13,14 +13,14 @@
         android:layout_marginBottom="10dp">
 
         <!-- 음식 사진 !-->
-        <TextView
+        <ImageView
             android:id="@+id/saladlist_img"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginLeft="30dp"
             android:layout_gravity="center"
             android:layout_marginRight="30dp">
-        </TextView>
+        </ImageView>
 
         <!-- 요리 제목 출력!-->
         <TextView
