@@ -58,7 +58,6 @@ public class Add_list_western extends AppCompatActivity {
         recipeEditText = findViewById(R.id.add_list_western_recipe);
         commitButton = findViewById(R.id.add_list_western_commit);
         cancelButton = findViewById(R.id.add_list_western_cancel);
-        WesternMainList = findViewById(R.id.westernmain_list);
 
         // Set click listener for image select button
         findViewById(R.id.add_list_western_imgbut).setOnClickListener(new View.OnClickListener() {
@@ -79,8 +78,6 @@ public class Add_list_western extends AppCompatActivity {
         // 액션바에 뒤로가기 버튼 추가
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Load Korean recipes
-        loadWesternRecipes();
     }
 
     // 뒤로가기 버튼 처리
@@ -118,61 +115,8 @@ public class Add_list_western extends AppCompatActivity {
         }
     }
 
-    // Load Korean recipes from Firebase
-    private void loadWesternRecipes() {
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                if (recipe != null) {
-                    addRecipeToLayout(recipe, dataSnapshot.getKey());
-                }
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // Not used
-            }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                // Not used
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // Not used
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Not used
-            }
-        });
-    }
-
-    // Add recipe to layout
-    private void addRecipeToLayout(Recipe recipe, String recipeId) {
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 10, 0, 10);
-
-        LinearLayout recipeLayout = new LinearLayout(this);
-        recipeLayout.setLayoutParams(layoutParams);
-        recipeLayout.setOrientation(LinearLayout.VERTICAL);
-
-        // Title
-        TextView titleTextView = new TextView(this);
-        titleTextView.setText(recipe.getTitle());
-        recipeLayout.addView(titleTextView);
-
-        // Recipe
-        TextView recipeTextView = new TextView(this);
-        recipeLayout.addView(recipeTextView);
-
-        WesternMainList.addView(recipeLayout);
-    }
 
 
     // Clear input fields after adding recipe
@@ -228,7 +172,7 @@ public class Add_list_western extends AppCompatActivity {
                                 if (recipeId != null) {
                                     databaseReference.child(recipeId).setValue(koreanRecipe);
                                     Toast.makeText(Add_list_western.this, "게시글이 등록되었습니다", Toast.LENGTH_SHORT).show();
-                                    addRecipeToLayout(koreanRecipe, recipeId); // Add recipe to layout
+
                                     clearInputFields(); // Clear input fields
                                 } else {
                                     Toast.makeText(Add_list_western.this, "게시글 등록에 실패했습니다", Toast.LENGTH_SHORT).show();
