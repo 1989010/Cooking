@@ -9,7 +9,8 @@
         android:layout_width="320dp"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        android:background="#C3E0FF"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
 
         <!-- 음식 사진 !-->

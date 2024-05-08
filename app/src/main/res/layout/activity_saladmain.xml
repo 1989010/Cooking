@@ -15,31 +15,37 @@
         <!-- 메인홈으로 가는 아이콘!-->
         <TextView
             android:id="@+id/saladmain_main"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginLeft="155dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="178dp"
             android:background="@drawable/salad">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="173dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:text="셀 러 드">
         </TextView>
 
         <!-- 게시글 추가 아이콘 !-->
         <TextView
             android:id="@+id/saladmain_addlist"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="@drawable/pluse"
-            android:layout_marginLeft="115dp"
-            android:layout_gravity="bottom|right">
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginLeft="132dp"
+            android:background="@drawable/pluse">
         </TextView>
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="셀 러 드 "
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:textSize="20dp">
-    </TextView>
 
     <!-- 게시글 출력되는 곳!-->
     <LinearLayout
@@ -51,13 +57,14 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="427dp"
-            android:background="@color/white">
+            android:background="#C3E0FF">
 
             <LinearLayout
                 android:id="@+id/saladmain_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="#C3E0FF">
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

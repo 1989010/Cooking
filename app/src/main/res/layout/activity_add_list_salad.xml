@@ -7,10 +7,9 @@
     android:background="#C3E0FF">
 
     <LinearLayout
-        android:layout_width="280dp"
+        android:layout_width="match_parent"
         android:layout_height="530dp"
         android:layout_gravity="center"
-        android:layout_marginTop="80dp"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -27,7 +26,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/camera"
-                android:layout_marginLeft="95dp">
+                android:layout_marginLeft="150dp">
             </ImageView>
 
             <!-- 이미지 선택버튼!-->
@@ -85,9 +84,9 @@
                     android:layout_height="300dp"
                     android:background="@null"
                     android:hint="레시피를 입력해 주세요.
-                                    예시)
-                                                    밥 1공기
-                                                    참기름 1스푼">
+                                               예시)
+                                                                             밥 1공기
+                                                                        참기름 1스푼">
                 </EditText>
             </ScrollView>
 
@@ -100,21 +99,21 @@
                 <!-- 완료 버튼 !-->
                 <Button
                     android:id="@+id/add_list_salad_commit"
-                    android:layout_width="133dp"
+                    android:layout_width="153dp"
                     android:layout_height="match_parent"
                     android:text="완    료"
                     android:textSize="24sp"
-                    android:layout_marginLeft="5dp">
+                    android:layout_marginLeft="25dp">
                 </Button>
 
                 <!-- 취소 버튼 !-->
                 <Button
                     android:id="@+id/add_list_salad_cancel"
-                    android:layout_width="133dp"
+                    android:layout_width="153dp"
                     android:layout_height="match_parent"
                     android:text="취    소"
                     android:textSize="24sp"
-                    android:layout_marginLeft="5dp">
+                    android:layout_marginLeft="55dp">
                 </Button>
             </LinearLayout>
         </LinearLayout>
