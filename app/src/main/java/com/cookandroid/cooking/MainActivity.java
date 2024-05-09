@@ -1,4 +1,5 @@
 package com.cookandroid.cooking;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.cookandroid.cooking.Koreanmain;
 import com.cookandroid.cooking.Westernmain;
 import com.cookandroid.cooking.Snack_barmain;
 import com.cookandroid.cooking.Saladmain;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Button westernButton;
     private Button snackButton;
     private Button saladButton;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>자취 요리 마스터</font>")); // 검은색으로 변경
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_home:
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish(); // 현재 액티비티 종료
+                    return true;
+
+                case R.id.menu_map:
+                    // 맵 기능 추가 (원하는 기능을 여기에 추가)
+                    return true;
+                case R.id.menu_profile:
+                    // 프로필 기능 추가 (원하는 기능을 여기에 추가)
+                    return true;
+                default:
+                    return false;
+            }
+        });
+
         // 각 버튼 찾기
         koreanButton = findViewById(R.id.main_korean);
         westernButton = findViewById(R.id.main_western);
