@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#FFFFFF</item> <!-- 흰색으로 변경 -->
+        <item name="android:statusBarColor">#000000</item> <!--상태 표시줄 검은색으로 변경 -->
         <item name="android:logo">@drawable/ic_baseline_logout_24</item>
     </style>
 </resources>

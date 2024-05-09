@@ -2,6 +2,7 @@ package com.cookandroid.cooking;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>자취 요리 마스터</font>")); // 검은색으로 변경
         // 각 버튼 찾기
         koreanButton = findViewById(R.id.main_korean);
         westernButton = findViewById(R.id.main_western);
