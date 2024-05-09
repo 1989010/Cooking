@@ -4,20 +4,15 @@
     <item
         android:id="@+id/menu_home"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_home_24"
+        android:icon="@drawable/home"
         android:title="Home"
         app:showAsAction="always"/>
+
     <item
-        android:id="@+id/menu_party"
+        android:id="@+id/menu_map"
         android:enabled="true"
-        android:icon="@drawable/ic_celebration"
-        android:title="Party"
-        app:showAsAction="always"/>
-    <item
-        android:id="@+id/menu_chat"
-        android:enabled="true"
-        android:icon="@drawable/ic_chat"
-        android:title="chat"
+        android:icon="@drawable/map"
+        android:title="Map"
         app:showAsAction="always"/>
 
     <item
