@@ -56,14 +56,14 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="350dp"
-            android:background="#C3E0FF">
+           >
 
             <LinearLayout
                 android:id="@+id/snack_barmian_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#C3E0FF"></LinearLayout>
+                ></LinearLayout>
         </ScrollView>
     </LinearLayout>
 </LinearLayout>

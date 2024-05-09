@@ -63,7 +63,6 @@
                 android:id="@+id/westernmian_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#C3E0FF"
                 android:orientation="vertical"></LinearLayout>
         </ScrollView>
     </LinearLayout>

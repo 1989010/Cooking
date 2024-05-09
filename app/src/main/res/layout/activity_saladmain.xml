@@ -56,15 +56,13 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="427dp"
-            android:background="#C3E0FF">
+            android:layout_height="427dp">
 
             <LinearLayout
                 android:id="@+id/saladmain_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#C3E0FF">
+                android:orientation="vertical">
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
