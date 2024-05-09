@@ -141,6 +141,13 @@ public class Koreanmain extends AppCompatActivity {
         // 새로운 레시피를 표시할 레이아웃 생성
         View recipeItemView = getLayoutInflater().inflate(R.layout.activity_koreanlist, null);
 
+        // 현재 날짜를 가져오기
+        String currentDate = getCurrentDate();
+
+        // 날짜를 표시할 TextView 찾아오기
+        TextView dateTextView = recipeItemView.findViewById(R.id.koreanlist_time);
+        dateTextView.setText(currentDate);
+
         // 각 뷰에 데이터 설정
         TextView titleTextView = recipeItemView.findViewById(R.id.koreanlist_tittle);
         titleTextView.setText(recipe.getTitle());

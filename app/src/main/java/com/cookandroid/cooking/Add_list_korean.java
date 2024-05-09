@@ -2,9 +2,12 @@ package com.cookandroid.cooking;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -76,8 +79,21 @@ public class Add_list_korean extends AppCompatActivity {
             }
         });
 
+        // Set click listener for cancel button
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 현재 액티비티 종료
+                finish();
+            }
+        });
+
         // 액션바에 뒤로가기 버튼 추가
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // 액션바 배경색 및 제목 색상 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(195, 224, 255)));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>한 식</font>")); // 검은색으로 변경
 
 
     }
