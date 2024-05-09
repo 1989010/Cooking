@@ -33,6 +33,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Add_list_salad extends AppCompatActivity {
 
@@ -184,8 +187,11 @@ public class Add_list_salad extends AppCompatActivity {
                                 // Image download URL retrieved
                                 String imageUrl = uri.toString();
 
+                                // Get current date
+                                String currentDate = getCurrentDate();
+
                                 // Create new recipe object with image URL
-                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl);
+                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate);
 
                                 // Push recipe to database
                                 String recipeId = databaseReference.push().getKey();
@@ -194,6 +200,9 @@ public class Add_list_salad extends AppCompatActivity {
                                     Toast.makeText(Add_list_salad.this, "게시글이 등록되었습니다", Toast.LENGTH_SHORT).show();
 
                                     clearInputFields(); // Clear input fields
+                                    Intent intent = new Intent(Add_list_salad.this, Saladmain.class);
+                                    startActivity(intent);
+                                    finish(); // 현재 엑티비티 종료
                                 } else {
                                     Toast.makeText(Add_list_salad.this, "게시글 등록에 실패했습니다", Toast.LENGTH_SHORT).show();
                                 }
@@ -210,4 +219,10 @@ public class Add_list_salad extends AppCompatActivity {
                 });
     }
 
+    // 현재 날짜를 문자열로 반환하는 메서드
+    private String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 }

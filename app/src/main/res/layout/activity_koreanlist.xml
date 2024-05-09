@@ -39,16 +39,18 @@
             android:layout_height="60dp"
             android:orientation="horizontal">
 
-            <!-- 게시자 아이디 !-->
-            <TextView
-                android:id="@+id/koreanlist_hostid"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"></TextView>
+
 
             <!-- 게시글 업로드 날짜!-->
             <TextView
                 android:id="@+id/koreanlist_time"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"></TextView>
+
+            <!-- 게시자 아이디 !-->
+            <TextView
+                android:id="@+id/koreanlist_hostid"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:gravity="center"></TextView>

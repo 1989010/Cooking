@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,15 +23,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Add_list_korean extends AppCompatActivity {
 
@@ -61,7 +60,6 @@ public class Add_list_korean extends AppCompatActivity {
         recipeEditText = findViewById(R.id.add_list_korean_recipe);
         commitButton = findViewById(R.id.add_list_korean_commit);
         cancelButton = findViewById(R.id.add_list_korean_cancel);
-
 
         // Set click listener for image select button
         findViewById(R.id.add_list_korean_imgbut).setOnClickListener(new View.OnClickListener() {
@@ -94,8 +92,6 @@ public class Add_list_korean extends AppCompatActivity {
         // 액션바 배경색 및 제목 색상 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(195, 224, 255)));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>한 식</font>")); // 검은색으로 변경
-
-
     }
 
     // 뒤로가기 버튼 처리
@@ -134,10 +130,6 @@ public class Add_list_korean extends AppCompatActivity {
     }
 
     // Load Korean recipes from Firebase
-
-
-
-
 
     // Clear input fields after adding recipe
     private void clearInputFields() {
@@ -184,8 +176,11 @@ public class Add_list_korean extends AppCompatActivity {
                                 // Image download URL retrieved
                                 String imageUrl = uri.toString();
 
-                                // Create new recipe object with image URL
-                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl);
+                                // Get current date
+                                String currentDate = getCurrentDate();
+
+                                // Create new recipe object with image URL and current date
+                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate);
 
                                 // Push recipe to database
                                 String recipeId = databaseReference.push().getKey();
@@ -213,4 +208,10 @@ public class Add_list_korean extends AppCompatActivity {
                 });
     }
 
+    // 현재 날짜를 문자열로 반환하는 메서드
+    private String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
 }

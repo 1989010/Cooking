@@ -81,7 +81,7 @@ public class Koreanmain extends AppCompatActivity {
         loadKoreanRecipes();
 
         // 현재 날짜 로그에 기록
-        Log.d(TAG, "현재 날짜: " + getCurrentDate());
+        Log.d(TAG, "등록된 날짜: " + getCurrentDate());
     }
 
     // 현재 날짜를 문자열로 반환하는 메서드
@@ -104,13 +104,14 @@ public class Koreanmain extends AppCompatActivity {
 
     // 한식 레시피 목록 불러오기
     private void loadKoreanRecipes() {
+        final String currentDate = getCurrentDate(); // 현재 날짜 가져오기
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Recipe recipe = dataSnapshot.getValue(Recipe.class);
                 if (recipe != null) {
                     // 레시피를 화면에 추가하는 메서드 호출
-                    addRecipeToLayout(recipe);
+                    addRecipeToLayout(recipe, currentDate);
                 }
             }
 
@@ -137,16 +138,15 @@ public class Koreanmain extends AppCompatActivity {
     }
 
     // 레시피를 화면에 추가
-    private void addRecipeToLayout(Recipe recipe) {
+    private void addRecipeToLayout(Recipe recipe, String currentDate) {
         // 새로운 레시피를 표시할 레이아웃 생성
         View recipeItemView = getLayoutInflater().inflate(R.layout.activity_koreanlist, null);
 
-        // 현재 날짜를 가져오기
-        String currentDate = getCurrentDate();
-
         // 날짜를 표시할 TextView 찾아오기
         TextView dateTextView = recipeItemView.findViewById(R.id.koreanlist_time);
-        dateTextView.setText(currentDate);
+        dateTextView.setText(recipe.getDate());
+
+
 
         // 각 뷰에 데이터 설정
         TextView titleTextView = recipeItemView.findViewById(R.id.koreanlist_tittle);
@@ -167,6 +167,7 @@ public class Koreanmain extends AppCompatActivity {
         // 게시글 목록에 새로운 레시피 레이아웃 추가
         koreanMainList.addView(recipeItemView);
     }
+
 
     private void downloadImage(String imageUrl, final ImageView imageView) {
         Log.d(TAG, "Image URL: " + imageUrl); // Add this line to log the image URL

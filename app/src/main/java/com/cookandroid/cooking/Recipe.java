@@ -9,18 +9,18 @@ public class Recipe {
     private String recipe;
     private String userId;
     private String imageUrl;
-    private String registrationDate; // 등록된 날짜를 저장하는 필드 추가
+    private String date; // 날짜 필드 추가
 
     public Recipe() {
         // Default constructor required for calls to DataSnapshot.getValue(Recipe.class)
     }
 
-    public Recipe(String title, String recipe, String userId, String imageUrl) {
+    public Recipe(String title, String recipe, String userId, String imageUrl, String date) {
         this.title = title;
         this.recipe = recipe;
         this.userId = userId;
         this.imageUrl = imageUrl;
-        this.registrationDate = getCurrentDate(); // 현재 날짜로 설정
+        this.date = date;
     }
 
     public String getTitle() {
@@ -39,14 +39,5 @@ public class Recipe {
         return imageUrl;
     }
 
-    public String getRegistrationDate() {
-        return registrationDate;
-    }
-
-    // 현재 날짜를 문자열로 반환하는 메서드
-    private String getCurrentDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
+    public String getDate() { return date;}
 }
