@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#C3E0FF">
+    android:background="@drawable/westernbackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +33,8 @@
             android:layout_marginLeft="180dp"
             android:layout_marginTop="10dp"
             android:textSize="20dp"
-            android:text=" 양  식">
+            android:text=" 양  식"
+            android:textColor="@color/white">
         </TextView>
 
         <!-- 게시글 추가 아이콘 !-->
@@ -56,16 +57,14 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="427dp"
-            android:background="#C3E0FF">
+            android:layout_height="427dp">
 
             <LinearLayout
                 android:id="@+id/westernmian_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#C3E0FF">
-            </LinearLayout>
+                android:background="#C3E0FF"
+                android:orientation="vertical"></LinearLayout>
         </ScrollView>
     </LinearLayout>
 </LinearLayout>
