@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/westernbackground">
+    android:background="#C3E0FF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
 
     <!-- 게시글 출력되는 곳!-->
     <LinearLayout
-        android:layout_width="320dp"
+        android:layout_width="360dp"
         android:layout_height="430dp"
         android:orientation="vertical"
         android:layout_gravity="center">
@@ -63,7 +63,8 @@
                 android:id="@+id/westernmian_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical"
+                android:background="#C3E0FF"></LinearLayout>
         </ScrollView>
     </LinearLayout>
 </LinearLayout>
