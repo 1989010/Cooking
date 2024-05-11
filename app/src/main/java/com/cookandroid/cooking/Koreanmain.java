@@ -57,9 +57,8 @@ public class Koreanmain extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // 액션바 배경색 및 제목 색상 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(195, 224, 255)));
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>한 식</font>")); // 검은색으로 변경
-
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>한 식</font>")); // 검은색#C3E0FF
         // 게시글 추가 아이콘 찾기
         addListIcon = findViewById(R.id.koreanmain_addlist);
 

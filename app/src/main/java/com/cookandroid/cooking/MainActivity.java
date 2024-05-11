@@ -42,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.menu_map:
-                    // 맵 기능 추가 (원하는 기능을 여기에 추가)
+                    Intent intent2 = new Intent(MainActivity.this, MapsActivity.class);
+                    startActivity(intent2);
+                    finish(); // 현재 액티비티 종료
                     return true;
                 case R.id.menu_profile:
                     // 프로필 기능 추가 (원하는 기능을 여기에 추가)
