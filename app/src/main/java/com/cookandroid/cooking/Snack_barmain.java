@@ -158,6 +158,17 @@ public class Snack_barmain extends AppCompatActivity {
 
         // 게시글 목록에 새로운 레시피 레이아웃 추가
         Snack_barMainList.addView(recipeItemView);
+
+        // 제목을 클릭하는 이벤트 처리
+        titleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 클릭한 게시글의 정보를 수정하는 액티비티로 이동
+                Intent intent = new Intent(Snack_barmain.this, list_edit_snack_bar.class);
+                intent.putExtra("recipe", recipe); // 클릭한 게시글의 정보를 전달
+                startActivity(intent);
+            }
+        });
     }
 
     private void downloadImage(String imageUrl, final ImageView imageView) {

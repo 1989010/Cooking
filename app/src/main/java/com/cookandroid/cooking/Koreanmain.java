@@ -62,7 +62,7 @@ public class Koreanmain extends AppCompatActivity {
         // 게시글 추가 아이콘 찾기
         addListIcon = findViewById(R.id.koreanmain_addlist);
 
-        // 게시x글 목록을 표시할 레이아웃 찾기
+        // 게시글 목록을 표시할 레이아웃 찾기
         koreanMainList = findViewById(R.id.koreanmain_list);
 
         // 게시글 추가 아이콘 클릭 리스너 설정
@@ -116,13 +116,13 @@ public class Koreanmain extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // Not used
+                // 레시피가 변경되었을 때 화면을 다시 로드할 필요가 있으면 이 곳에 코드를 추가할 수 있습니다.
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                // Not used
             }
+
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -136,16 +136,15 @@ public class Koreanmain extends AppCompatActivity {
         });
     }
 
+
     // 레시피를 화면에 추가
-    private void addRecipeToLayout(Recipe recipe, String currentDate) {
+    private void addRecipeToLayout(final Recipe recipe, final String currentDate) {
         // 새로운 레시피를 표시할 레이아웃 생성
         View recipeItemView = getLayoutInflater().inflate(R.layout.activity_koreanlist, null);
 
         // 날짜를 표시할 TextView 찾아오기
         TextView dateTextView = recipeItemView.findViewById(R.id.koreanlist_time);
         dateTextView.setText(recipe.getDate());
-
-
 
         // 각 뷰에 데이터 설정
         TextView titleTextView = recipeItemView.findViewById(R.id.koreanlist_tittle);
@@ -165,7 +164,19 @@ public class Koreanmain extends AppCompatActivity {
 
         // 게시글 목록에 새로운 레시피 레이아웃 추가
         koreanMainList.addView(recipeItemView);
+
+        // 제목을 클릭하는 이벤트 처리
+        titleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 클릭한 게시글의 정보를 수정하는 액티비티로 이동
+                Intent intent = new Intent(Koreanmain.this, list_edit_korean.class);
+                intent.putExtra("recipe", recipe); // 클릭한 게시글의 정보를 전달
+                startActivity(intent);
+            }
+        });
     }
+
 
 
     private void downloadImage(String imageUrl, final ImageView imageView) {

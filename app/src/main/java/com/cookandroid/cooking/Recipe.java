@@ -3,8 +3,9 @@ package com.cookandroid.cooking;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.io.Serializable;
 
-public class Recipe {
+public class Recipe implements Serializable {
     private String title;
     private String recipe;
     private String userId;
@@ -31,9 +32,7 @@ public class Recipe {
         return recipe;
     }
 
-    public String getUserId() {
-        return userId;
-    }
+    public String getUserId() {return userId;}
 
     public String getImageUrl() {
         return imageUrl;

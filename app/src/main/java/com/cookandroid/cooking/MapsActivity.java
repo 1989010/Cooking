@@ -65,6 +65,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // 배재대학교의 위도와 경도
+        double latitude = 36.321861;
+        double longitude = 127.367281;
+
+        // 배재대학교 위치를 LatLng 객체로 생성합니다.
+        LatLng baekjeUniversity = new LatLng(latitude, longitude);
+
+        // 배재대학교 위치에 마커를 추가합니다.
+        mMap.addMarker(new MarkerOptions().position(baekjeUniversity).title("배재대학교"));
+
+        // 배재대학교 위치로 지도의 카메라를 이동시킵니다.
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(baekjeUniversity, 16));
+
         // 권한을 확인하고 위치 정보 요청을 시작합니다.
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // 위치 업데이트를 위한 요청
@@ -82,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
 
                     // 현재 위치로 카메라 이동
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
                 }
 
                 @Override
@@ -111,7 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Address address = addresses.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                         mMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
                     } else {
                         Toast.makeText(MapsActivity.this, "Location not found", Toast.LENGTH_SHORT).show();
                     }

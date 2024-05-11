@@ -66,6 +66,8 @@ public class Saladmain extends AppCompatActivity {
         // 게시글 목록을 표시할 레이아웃 찾기
         SaladMainList = findViewById(R.id.saladmain_list);
 
+
+
         // 게시글 추가 아이콘 클릭 리스너 설정
         addListIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +161,19 @@ public class Saladmain extends AppCompatActivity {
 
         // 게시글 목록에 새로운 레시피 레이아웃 추가
         SaladMainList.addView(recipeItemView);
+
+        // 제목을 클릭하는 이벤트 처리
+        titleTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 클릭한 게시글의 정보를 수정하는 액티비티로 이동
+                Intent intent = new Intent(Saladmain.this, list_edit_salad.class);
+                intent.putExtra("recipe", recipe); // 클릭한 게시글의 정보를 전달
+                startActivity(intent);
+            }
+        });
     }
+
 
     private void downloadImage(String imageUrl, final ImageView imageView) {
         Log.d(TAG, "Image URL: " + imageUrl); // Add this line to log the image URL
