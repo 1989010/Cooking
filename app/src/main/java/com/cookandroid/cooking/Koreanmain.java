@@ -110,20 +110,21 @@ public class Koreanmain extends AppCompatActivity {
                 Recipe recipe = dataSnapshot.getValue(Recipe.class);
                 if (recipe != null) {
                     // 레시피를 화면에 추가하는 메서드 호출
-                    addRecipeToLayout(recipe, currentDate);
+                    addRecipeToLayout(recipe, currentDate, dataSnapshot.getKey()); // 유저 아이디 전달
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // 레시피가 변경되었을 때 화면을 다시 로드할 필요가 있으면 이 곳에 코드를 추가할 수 있습니다.
+                // 레시피가 변경되었을 때 화면을 다시 로드
+                loadKoreanRecipes();
             }
+
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
             }
-
-
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 // Not used
@@ -137,8 +138,10 @@ public class Koreanmain extends AppCompatActivity {
     }
 
 
+
+
     // 레시피를 화면에 추가
-    private void addRecipeToLayout(final Recipe recipe, final String currentDate) {
+    private void addRecipeToLayout(final Recipe recipe, final String currentDate, String userId) {
         // 새로운 레시피를 표시할 레이아웃 생성
         View recipeItemView = getLayoutInflater().inflate(R.layout.activity_koreanlist, null);
 
@@ -171,7 +174,8 @@ public class Koreanmain extends AppCompatActivity {
             public void onClick(View v) {
                 // 클릭한 게시글의 정보를 수정하는 액티비티로 이동
                 Intent intent = new Intent(Koreanmain.this, list_edit_korean.class);
-                intent.putExtra("recipe", recipe); // 클릭한 게시글의 정보를 전달
+                intent.putExtra("recipe", recipe);// 클릭한 게시글의 정보를 전달
+                intent.putExtra("recipeKey", userId);
                 startActivity(intent);
             }
         });

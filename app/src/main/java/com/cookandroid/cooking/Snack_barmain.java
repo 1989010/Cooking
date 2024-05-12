@@ -57,8 +57,8 @@ public class Snack_barmain extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // 액션바 배경색 및 제목 색상 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(195, 224, 255)));
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>분 식</font>")); // 검은색으로 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>분 식</font>")); // 검은색#C3E0FF
         // 게시글 추가 아이콘 찾기
         addListIcon = findViewById(R.id.snack_barmian_addlist);
 
@@ -76,11 +76,11 @@ public class Snack_barmain extends AppCompatActivity {
             }
         });
 
-        // 분식 레시피 목록 불러오기
+        // 한식 레시피 목록 불러오기
         loadSnackRecipes();
 
         // 현재 날짜 로그에 기록
-        Log.d(TAG, "현재 날짜: " + getCurrentDate());
+        Log.d(TAG, "등록된 날짜: " + getCurrentDate());
     }
 
     // 현재 날짜를 문자열로 반환하는 메서드
@@ -101,28 +101,30 @@ public class Snack_barmain extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // 분식 레시피 목록 불러오기
+    // 한식 레시피 목록 불러오기
     private void loadSnackRecipes() {
+        final String currentDate = getCurrentDate(); // 현재 날짜 가져오기
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Recipe recipe = dataSnapshot.getValue(Recipe.class);
                 if (recipe != null) {
                     // 레시피를 화면에 추가하는 메서드 호출
-                    addRecipeToLayout(recipe);
+                    addRecipeToLayout(recipe, currentDate, dataSnapshot.getKey()); // 유저 아이디 전달
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // Not used
+                // 레시피가 변경되었을 때 화면을 다시 로드
+                loadSnackRecipes();
             }
+
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                // Not used
-            }
 
+            }
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 // Not used
@@ -135,10 +137,17 @@ public class Snack_barmain extends AppCompatActivity {
         });
     }
 
+
+
+
     // 레시피를 화면에 추가
-    private void addRecipeToLayout(Recipe recipe) {
+    private void addRecipeToLayout(final Recipe recipe, final String currentDate, String userId) {
         // 새로운 레시피를 표시할 레이아웃 생성
         View recipeItemView = getLayoutInflater().inflate(R.layout.activity_snack_barlist, null);
+
+        // 날짜를 표시할 TextView 찾아오기
+        TextView dateTextView = recipeItemView.findViewById(R.id.snack_barlist_time);
+        dateTextView.setText(recipe.getDate());
 
         // 각 뷰에 데이터 설정
         TextView titleTextView = recipeItemView.findViewById(R.id.snack_barlist_tittle);
@@ -165,11 +174,14 @@ public class Snack_barmain extends AppCompatActivity {
             public void onClick(View v) {
                 // 클릭한 게시글의 정보를 수정하는 액티비티로 이동
                 Intent intent = new Intent(Snack_barmain.this, list_edit_snack_bar.class);
-                intent.putExtra("recipe", recipe); // 클릭한 게시글의 정보를 전달
+                intent.putExtra("recipe", recipe);// 클릭한 게시글의 정보를 전달
+                intent.putExtra("recipeKey", userId);
                 startActivity(intent);
             }
         });
     }
+
+
 
     private void downloadImage(String imageUrl, final ImageView imageView) {
         Log.d(TAG, "Image URL: " + imageUrl); // Add this line to log the image URL

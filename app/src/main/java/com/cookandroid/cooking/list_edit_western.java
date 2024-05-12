@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,8 +19,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -32,6 +35,7 @@ public class list_edit_western extends AppCompatActivity {
     private Button editButton, deleteButton, commitButton, cancelButton;
 
     private Recipe recipe; // 전달받은 게시글의 정보를 저장할 변수
+    private String recipeKey; // 게시글의 고유 키를 저장할 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +53,12 @@ public class list_edit_western extends AppCompatActivity {
 
         // 전달받은 게시글의 정보 가져오기
         recipe = (Recipe) getIntent().getSerializableExtra("recipe");
+        recipeKey = getIntent().getStringExtra("recipeKey"); // 고유 키 가져오기
 
         // 가져온 게시글의 정보를 UI에 표시
         if (recipe != null) {
             titleEditText.setText(recipe.getTitle());
             recipeEditText.setText(recipe.getRecipe());
-            // 이미지 표시를 위해 downloadImage() 메서드를 사용하여 이미지를 가져와 설정
             downloadImage(recipe.getImageUrl(), imageView);
         }
 
@@ -62,64 +66,52 @@ public class list_edit_western extends AppCompatActivity {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
-                DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("korean_list").child(recipe.getUserId());
+                // 수정 버튼을 눌렀을 때 수정 가능한 상태로 UI 변경
+                titleEditText.setEnabled(true);
+                recipeEditText.setEnabled(true);
+                commitButton.setVisibility(View.VISIBLE); // 완료 버튼 표시
+                editButton.setVisibility(View.GONE); // 수정 버튼 숨김
 
-                // 해당 레퍼런스를 사용하여 해당 레시피를 삭제
-                recipeRef.removeValue()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // 수정 버튼을 눌렀을 때 수정 가능한 상태로 UI 변경
-                                titleEditText.setEnabled(true);
-                                recipeEditText.setEnabled(true);
-                                commitButton.setVisibility(View.VISIBLE); // 완료 버튼 표시
-                                editButton.setVisibility(View.GONE); // 수정 버튼 숨김
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // 삭제 실패 시 토스트 메시지 표시
-                                Toast.makeText(getApplicationContext(), "게시글 삭제에 실패했습니다", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                // 삭제 버튼을 보이게 설정
+                deleteButton.setVisibility(View.VISIBLE);
             }
         });
 
-        //삭제버튼 클릭시
+        // 삭제 버튼 클릭 리스너 설정
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "User ID: " + recipe.getUserId());
-                DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list").child(recipe.getUserId());
-                Log.d(TAG, "Recipe Reference: " + recipeRef);
+                if (recipeKey != null) {
+                    // Firebase 데이터베이스에서 해당 게시물의 레퍼런스 가져오기
+                    DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list").child(recipeKey);
 
-
-                // 해당 레퍼런스를 사용하여 해당 레시피를 삭제
-                recipeRef.removeValue()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // 삭제 성공 시 사용자에게 메시지 표시
-                                Toast.makeText(getApplicationContext(), "게시글이 삭제되었습니다", Toast.LENGTH_SHORT).show();
-                                // 현재 액티비티 종료
-                                finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // 삭제 실패 시 사용자에게 메시지 표시
-                                Toast.makeText(getApplicationContext(), "게시글 삭제에 실패했습니다", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    // 해당 레퍼런스를 사용하여 게시물 삭제
+                    recipeRef.removeValue()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        // 삭제 성공
+                                        Log.d(TAG, "게시물이 삭제되었습니다");
+                                        Toast.makeText(getApplicationContext(), "게시물이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(list_edit_western.this, Westernmain.class);
+                                        startActivity(intent);
+                                        finish(); // 현재 엑티비티 종료
+                                    } else {
+                                        // 삭제 실패
+                                        Log.e(TAG, "게시물 삭제에 실패했습니다", task.getException());
+                                        Toast.makeText(getApplicationContext(), "게시물 삭제에 실패했습니다", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                } else {
+                    // recipeKey가 null인 경우 처리할 코드 작성
+                    Log.e(TAG, "recipeKey is null");
+                }
             }
         });
 
-
-
-        // 완료 버튼 클릭 리스너 설정
+// 완료 버튼 클릭 리스너 설정
         commitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,38 +126,40 @@ public class list_edit_western extends AppCompatActivity {
                     return;
                 }
 
-                // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
-                DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list").child(recipe.getUserId());
+                if (recipeKey != null) {
+                    // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
+                    DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list");
 
-                // 수정된 내용으로 Recipe 객체 생성
-                Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate());
+                    // 새로운 레퍼런스를 생성하여 레시피 추가
+                    String newRecipeKey = recipeRef.push().getKey();
+                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate());
 
-                // Firebase에 업데이트
-                recipeRef.setValue(updatedRecipeObject)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // 업데이트 성공 시 수정 버튼과 삭제 버튼을 비활성화
-                                editButton.setEnabled(false);
-                                deleteButton.setEnabled(false);
-                                // 완료 버튼과 취소 버튼을 숨김
-                                commitButton.setVisibility(View.GONE);
-                                cancelButton.setVisibility(View.GONE);
-                                // 제목과 레시피 내용을 수정 불가능한 상태로 변경
-                                titleEditText.setEnabled(false);
-                                recipeEditText.setEnabled(false);
-                                // 사용자에게 메시지 표시
-                                Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // 업데이트 실패 시 사용자에게 메시지 표시
-                                Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                    // 기존 레시피 삭제
+                    recipeRef.child(recipeKey).removeValue();
+
+                    // 수정된 내용으로 새로운 레시피 추가
+                    recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // 사용자에게 메시지 표시
+                                    Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(list_edit_western.this, Westernmain.class);
+                                    startActivity(intent);
+                                    finish(); // 현재 엑티비티 종료
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // 업데이트 실패 시 사용자에게 메시지 표시
+                                    Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    // recipeKey가 null인 경우 처리할 코드 작성
+                    Log.e(TAG, "recipeKey is null");
+                }
             }
         });
 
@@ -197,9 +191,8 @@ public class list_edit_western extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    // 이미지 다운로드 메소드
     private void downloadImage(String imageUrl, final ImageView imageView) {
-
         // Firebase Storage에서 이미지 다운로드
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
 
@@ -212,6 +205,4 @@ public class list_edit_western extends AppCompatActivity {
                     }
                 });
     }
-
-    }
-
+}

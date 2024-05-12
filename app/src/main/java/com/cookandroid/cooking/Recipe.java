@@ -1,16 +1,15 @@
 package com.cookandroid.cooking;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.io.Serializable;
 
 public class Recipe implements Serializable {
+    private String key;
     private String title;
     private String recipe;
     private String userId;
     private String imageUrl;
-    private String date; // 날짜 필드 추가
+    private String date;
+
 
     public Recipe() {
         // Default constructor required for calls to DataSnapshot.getValue(Recipe.class)
@@ -22,6 +21,7 @@ public class Recipe implements Serializable {
         this.userId = userId;
         this.imageUrl = imageUrl;
         this.date = date;
+
     }
 
     public String getTitle() {
@@ -32,11 +32,16 @@ public class Recipe implements Serializable {
         return recipe;
     }
 
-    public String getUserId() {return userId;}
+    public String getUserId() {
+        return userId;
+    }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public String getDate() { return date;}
+    public String getDate() {
+        return date;
+    }
+
 }
