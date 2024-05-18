@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -43,6 +44,7 @@ public class Koreanmain extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,29 @@ public class Koreanmain extends AppCompatActivity {
         // 액션바 배경색 및 제목 색상 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>한 식</font>")); // 검은색#C3E0FF
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_home:
+                    Intent intent = new Intent(Koreanmain.this, MainActivity.class);
+                    startActivity(intent);
+                    finish(); // 현재 액티비티 종료
+                    return true;
+
+                case R.id.menu_map:
+                    Intent intent2 = new Intent(Koreanmain.this, MapsActivity.class);
+                    startActivity(intent2);
+                    finish(); // 현재 액티비티 종료
+                    return true;
+                case R.id.menu_profile:
+                    // 프로필 기능 추가 (원하는 기능을 여기에 추가)
+                    return true;
+                default:
+                    return false;
+            }
+        });
         // 게시글 추가 아이콘 찾기
         addListIcon = findViewById(R.id.koreanmain_addlist);
 
