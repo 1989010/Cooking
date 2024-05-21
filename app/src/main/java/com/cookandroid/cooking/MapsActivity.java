@@ -1,16 +1,10 @@
 package com.cookandroid.cooking;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -76,43 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(baekjeUniversity).title("배재대학교"));
 
         // 배재대학교 위치로 지도의 카메라를 이동시킵니다.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(baekjeUniversity, 16));
-
-        // 권한을 확인하고 위치 정보 요청을 시작합니다.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // 위치 업데이트를 위한 요청
-            mMap.setMyLocationEnabled(true);
-
-            // 위치 관리자 설정
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            LocationListener locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    // 현재 위치를 가져와서 LatLng 객체로 변환합니다.
-                    LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
-                    // 현재 위치를 지도에 마커로 표시합니다.
-                    mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
-
-                    // 현재 위치로 카메라 이동
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-                @Override
-                public void onProviderEnabled(String provider) {}
-
-                @Override
-                public void onProviderDisabled(String provider) {
-                    Toast.makeText(MapsActivity.this, "Location Provider Disabled", Toast.LENGTH_SHORT).show();
-                }
-            };
-
-            // 위치 업데이트 요청 등록
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(baekjeUniversity, 17));
 
         // 검색 버튼 클릭 시 이벤트 처리
         binding.searchButton.setOnClickListener(view -> {
@@ -124,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Address address = addresses.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                         mMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                     } else {
                         Toast.makeText(MapsActivity.this, "Location not found", Toast.LENGTH_SHORT).show();
                     }

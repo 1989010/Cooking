@@ -85,7 +85,7 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
                 android:textSize="15sp"
-                android:text="본인 이메일">
+                android:text="본인 닉네임">
             </TextView>
         </LinearLayout>
 

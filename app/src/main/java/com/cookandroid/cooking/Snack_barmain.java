@@ -78,7 +78,9 @@ public class Snack_barmain extends AppCompatActivity {
                     finish(); // 현재 액티비티 종료
                     return true;
                 case R.id.menu_profile:
-                    // 프로필 기능 추가 (원하는 기능을 여기에 추가)
+                    Intent intent3 = new Intent(Snack_barmain.this, profile.class);
+                    startActivity(intent3);
+                    finish(); // 현재 액티비티 종료
                     return true;
                 default:
                     return false;

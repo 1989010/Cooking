@@ -13,19 +13,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class RegisterActivity extends AppCompatActivity
-{
+public class RegisterActivity extends AppCompatActivity {
 
-    private FirebaseAuth mFirebaseAuth; //파이어 베이스 인증
+    private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
     private DatabaseReference mDatabaseRef; // 실시간 데이터베이스
-    private EditText mEtEmail, mEtPwd; // 회원가입 입력 필드
+    private EditText mEtEmail, mEtPwd, mEtName, mEtNickname; // 회원가입 입력 필드
     private Button mBtnRegister; // 회원가입 입력 버튼
 
     @Override
@@ -36,12 +34,13 @@ public class RegisterActivity extends AppCompatActivity
         // 액션바에 뒤로가기 버튼 추가
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("Cooking");
 
         mEtEmail = findViewById(R.id.et_email);
         mEtPwd = findViewById(R.id.et_pwd);
+        mEtName = findViewById(R.id.et_name);
+        mEtNickname = findViewById(R.id.et_nickname);
         mBtnRegister = findViewById(R.id.signup_join);
 
         mBtnRegister.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +49,8 @@ public class RegisterActivity extends AppCompatActivity
                 // 회원가입 처리 시작
                 String strEmail = mEtEmail.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
+                String strName = mEtName.getText().toString();
+                String strNickname = mEtNickname.getText().toString();
 
                 // Firebase 진행
                 mFirebaseAuth.createUserWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
@@ -61,6 +62,8 @@ public class RegisterActivity extends AppCompatActivity
                             account.setIdToken(firebaseUser.getUid());
                             account.setEmailId(firebaseUser.getEmail());
                             account.setPassword(strPwd);
+                            account.setName(strName); // 이름 설정
+                            account.setNickname(strNickname); // 닉네임 설정
 
                             // setValue: 데이터베이스에 insert
                             mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
@@ -77,8 +80,8 @@ public class RegisterActivity extends AppCompatActivity
                 });
             }
         });
-
     }
+
     // 뒤로가기 버튼 처리
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
