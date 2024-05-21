@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#C3E0FF">
+
+    <!-- 메인 아이콘!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/main"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center">
+        </TextView>
+    </LinearLayout>
+
+    <!-- 내 정보 !-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/profile_myprofile">
+
+        <!-- 내 정보 사진 !-->
+        <ImageView
+            android:background="@drawable/profile"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="30dp">
+        </ImageView>
+
+        <!-- 내 정보 텍스트!-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textSize="30dp"
+            android:text="내 정보">
+        </TextView>
+    </LinearLayout>
+
+    <!-- 비밀번호 변경 !-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/profile_changpassword">
+
+        <!-- 비밀번호 사진 !-->
+        <ImageView
+            android:background="@drawable/log_password"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="30dp">
+        </ImageView>
+
+        <!-- 비밀번호 변경 텍스트 !-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textSize="30dp"
+            android:text="비밀번호 변경">
+        </TextView>
+    </LinearLayout>
+
+    <!-- 내가 작성한 글 정보  !-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/profile_mylist">
+
+        <!-- 내 작성글 사진 !-->
+        <ImageView
+            android:background="@drawable/list"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="30dp">
+        </ImageView>
+
+        <!-- 내 작성글 텍스트 !-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textSize="30dp"
+            android:text="내가 쓴 게시글">
+        </TextView>
+    </LinearLayout>
+
+    <!-- 내가 작성한 글 정보  !-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/profile_log_out">
+
+        <!-- 내 작성글 사진 !-->
+        <ImageView
+            android:background="@drawable/log_out"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="30dp">
+        </ImageView>
+
+        <!-- 내 작성글 텍스트 !-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textSize="30dp"
+            android:text="로그아웃">
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

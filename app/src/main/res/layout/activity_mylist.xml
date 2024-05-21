@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#C3E0FF">
+
+    <!-- 메인 아이콘!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/main"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center">
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내가 쓸 게시글"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:layout_marginTop="20dp">
+        </TextView>
+    </LinearLayout>
+
+    <!-- 게시글 출력되는 곳!-->
+    <LinearLayout
+        android:layout_width="360dp"
+        android:layout_height="430dp"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="427dp">
+
+            <LinearLayout
+                android:id="@+id/mylist_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#C3E0FF">
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#C3E0FF">
+
+    <!-- 메인 아이콘!-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/main"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center">
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내 정보"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:layout_marginTop="20dp">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- 이름 관리 !-->
+        <LinearLayout
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="40dp">
+
+            <!-- 이름 !-->
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="이 름"
+                android:textSize="18sp"></TextView>
+
+            <!-- 본인 이름  !-->
+            <TextView
+                android:id="@+id/myprofile_name"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="본인 이름"></TextView>
+        </LinearLayout>
+
+        <!-- 닉네임 관리 !-->
+        <LinearLayout
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="40dp">
+
+            <!-- 닉네임 !-->
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="닉네임"
+                android:textSize="18sp"></TextView>
+
+            <!-- 본인 닉네임  !-->
+            <TextView
+                android:id="@+id/myprofile_nickname"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:text="본인 이메일">
+            </TextView>
+        </LinearLayout>
+
+        <!-- 이메일 관리 !-->
+        <LinearLayout
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="40dp">
+
+            <!-- 이메일 !-->
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="이메일"
+                android:textSize="18sp"></TextView>
+
+            <!-- 본인 이메일  !-->
+            <TextView
+                android:id="@+id/myprofile_email"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:text="본인 이메일">
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
