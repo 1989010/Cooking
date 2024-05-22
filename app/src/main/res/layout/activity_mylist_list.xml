@@ -51,7 +51,7 @@
 
       <!-- 게시글 업로드 날짜!-->
       <TextView
-          android:id="@+id/mylist_list_time"
+          android:id="@+id/mylist_list_date"
           android:layout_width="match_parent"
           android:layout_height="25dp"
           android:textSize="20dp"

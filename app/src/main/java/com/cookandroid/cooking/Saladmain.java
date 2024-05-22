@@ -60,7 +60,7 @@ public class Saladmain extends AppCompatActivity {
 
         // 액션바 배경색 및 제목 색상 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>한 식</font>")); // 검은색#C3E0FF
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>샐 러 드</font>")); // 검은색#C3E0FF
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 

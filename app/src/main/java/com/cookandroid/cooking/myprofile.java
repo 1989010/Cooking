@@ -3,6 +3,8 @@ package com.cookandroid.cooking;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
@@ -29,7 +31,7 @@ public class myprofile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myprofile);
-
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>내 정보</font>")); // 검은색으로 변경
 
         // 액션바에 뒤로가기 버튼 추가

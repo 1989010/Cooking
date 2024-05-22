@@ -3,9 +3,12 @@ package com.cookandroid.cooking;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,9 +34,11 @@ public class changpassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_changpassword);
-
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>비밀번호 변경</font>")); // 검은색으로 변경
 
+        // 액션바에 뒤로가기 버튼 추가
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         currentPassword = findViewById(R.id.changepassword_password);
         newPassword = findViewById(R.id.changepassword_newpassword);
@@ -90,5 +95,16 @@ public class changpassword extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    // 뒤로가기 버튼 처리
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish(); // 현재 엑티비티 종료
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

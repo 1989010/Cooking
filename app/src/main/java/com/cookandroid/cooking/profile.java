@@ -3,6 +3,8 @@ package com.cookandroid.cooking;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -24,7 +26,7 @@ public class profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>프로필</font>")); // 검은색으로 변경
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -78,7 +80,7 @@ public class profile extends AppCompatActivity {
         profileMylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myProfilelist = new Intent(profile.this, myprofile.class);
+                Intent myProfilelist = new Intent(profile.this, mylist.class);
                 startActivity(myProfilelist);
             }
         });

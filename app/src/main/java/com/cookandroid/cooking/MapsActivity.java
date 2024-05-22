@@ -2,7 +2,6 @@ package com.cookandroid.cooking;
 
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.cookandroid.cooking.databinding.ActivityMapsBinding;
-import android.Manifest;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,18 +57,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // 배재대학교의 위도와 경도
-        double latitude = 36.321861;
-        double longitude = 127.367281;
+        // 배재대학교 사거리의 위도와 경도
+        double latitude = 36.322504;
+        double longitude = 127.370224;
 
-        // 배재대학교 위치를 LatLng 객체로 생성합니다.
+        // 배재대학교 사거리 위치를 LatLng 객체로 생성합니다.
         LatLng baekjeUniversity = new LatLng(latitude, longitude);
 
-        // 배재대학교 위치에 마커를 추가합니다.
-        mMap.addMarker(new MarkerOptions().position(baekjeUniversity).title("배재대학교"));
 
-        // 배재대학교 위치로 지도의 카메라를 이동시킵니다.
+        // 배재대학교 사거리 위치로 지도의 카메라를 이동시킵니다.
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(baekjeUniversity, 17));
+
+        // 추가할 마커들
+        addMarker(36.323508, 127.368818, "훼미리마트 배재대점");
+        addMarker(36.321689, 127.369253, "솔로몬마트");
+        addMarker(36.322427, 127.371255, "훼미리마트 배재원룸점");
+        addMarker(36.324943, 127.370636, "K2쇼핑마트");
+        addMarker(36.325568, 127.370167, "대박마트");
+        addMarker(36.326938, 127.370894, "GS슈퍼마켓 대전도마점");
+        addMarker(36.322732, 127.373958, "(주)귀빈장마트");
+        addMarker(36.322284, 127.375208, "영할인마트");
+        addMarker(36.322448, 127.376372, "중앙할인마트");
 
         // 검색 버튼 클릭 시 이벤트 처리
         binding.searchButton.setOnClickListener(view -> {
@@ -84,14 +91,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.addMarker(new MarkerOptions().position(latLng).title(locationName));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
                     } else {
-                        Toast.makeText(MapsActivity.this, "Location not found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MapsActivity.this, "위치가 검색되지 않습니다.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(MapsActivity.this, "Please enter a location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapsActivity.this, "위치를 입력하세요.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void addMarker(double lat, double lng, String title) {
+        LatLng location = new LatLng(lat, lng);
+        mMap.addMarker(new MarkerOptions().position(location).title(title));
     }
 }
