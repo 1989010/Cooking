@@ -132,7 +132,7 @@ public class list_edit_western extends AppCompatActivity {
 
                     // 새로운 레퍼런스를 생성하여 레시피 추가
                     String newRecipeKey = recipeRef.push().getKey();
-                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate());
+                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate(),recipe.getUserEmail());
 
                     // 기존 레시피 삭제
                     recipeRef.child(recipeKey).removeValue();

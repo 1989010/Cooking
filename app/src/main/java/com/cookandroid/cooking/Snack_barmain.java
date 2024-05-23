@@ -181,7 +181,7 @@ public class Snack_barmain extends AppCompatActivity {
         titleTextView.setText(recipe.getTitle());
 
         TextView hostIdTextView = recipeItemView.findViewById(R.id.snack_barlist_hostid);
-        hostIdTextView.setText(getUserEmail(recipe.getUserId()));
+        hostIdTextView.setText(recipe.getUserEmail()); // 이메일 표시
 
         // 이미지를 표시하는 ImageView를 찾아옴
         ImageView imageView = recipeItemView.findViewById(R.id.snack_barlist_img);

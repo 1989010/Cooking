@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,14 +24,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -65,8 +63,6 @@ public class Add_list_salad extends AppCompatActivity {
         commitButton = findViewById(R.id.add_list_salad_commit);
         cancelButton = findViewById(R.id.add_list_salad_cancel);
 
-
-
         // Set click listener for image select button
         findViewById(R.id.add_list_salad_imgbut).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,8 +94,6 @@ public class Add_list_salad extends AppCompatActivity {
         // 액션바 배경색 및 제목 색상 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(195, 224, 255)));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>샐 러 드</font>")); // 검은색으로 변경
-
-
     }
 
     // 뒤로가기 버튼 처리
@@ -137,11 +131,6 @@ public class Add_list_salad extends AppCompatActivity {
         }
     }
 
-
-
-
-
-
     // Clear input fields after adding recipe
     private void clearInputFields() {
         imageView.setImageResource(R.drawable.camera);
@@ -157,6 +146,7 @@ public class Add_list_salad extends AppCompatActivity {
             return;
         }
         final String userId = currentUser.getUid();
+        final String userEmail = currentUser.getEmail(); // 사용자 이메일 추가
 
         // Get input values
         final String title = titleEditText.getText().toString().trim();
@@ -191,12 +181,12 @@ public class Add_list_salad extends AppCompatActivity {
                                 String currentDate = getCurrentDate();
 
                                 // Create new recipe object with image URL
-                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate);
+                                Recipe saladRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate, userEmail);
 
                                 // Push recipe to database
                                 String recipeId = databaseReference.push().getKey();
                                 if (recipeId != null) {
-                                    databaseReference.child(recipeId).setValue(koreanRecipe);
+                                    databaseReference.child(recipeId).setValue(saladRecipe);
                                     Toast.makeText(Add_list_salad.this, "게시글이 등록되었습니다", Toast.LENGTH_SHORT).show();
 
                                     clearInputFields(); // Clear input fields

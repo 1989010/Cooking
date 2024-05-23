@@ -137,7 +137,7 @@ public class Koreanmain extends AppCompatActivity {
                 Recipe recipe = dataSnapshot.getValue(Recipe.class);
                 if (recipe != null) {
                     // 레시피를 화면에 추가하는 메서드 호출
-                    addRecipeToLayout(recipe, currentDate, dataSnapshot.getKey()); // 유저 아이디 전달
+                    addRecipeToLayout(recipe, currentDate, dataSnapshot.getKey()); // 레시피 키 전달
                 }
             }
 
@@ -147,11 +147,12 @@ public class Koreanmain extends AppCompatActivity {
                 loadKoreanRecipes();
             }
 
-
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                // 레시피가 삭제되었을 때 처리
+                removeRecipeFromLayout(dataSnapshot.getKey());
             }
+
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 // Not used
@@ -164,47 +165,42 @@ public class Koreanmain extends AppCompatActivity {
         });
     }
 
-
-
+    // 레이아웃에서 레시피 제거
+    private void removeRecipeFromLayout(String recipeKey) {
+        for (int i = 0; i < koreanMainList.getChildCount(); i++) {
+            View recipeItemView = koreanMainList.getChildAt(i);
+            TextView titleTextView = recipeItemView.findViewById(R.id.koreanlist_tittle);
+            if (titleTextView.getTag().equals(recipeKey)) {
+                koreanMainList.removeViewAt(i);
+                break;
+            }
+        }
+    }
 
     // 레시피를 화면에 추가
-    private void addRecipeToLayout(final Recipe recipe, final String currentDate, String userId) {
-        // 새로운 레시피를 표시할 레이아웃 생성
+    private void addRecipeToLayout(final Recipe recipe, final String currentDate, String recipeKey) {
         View recipeItemView = getLayoutInflater().inflate(R.layout.activity_koreanlist, null);
 
-        // 날짜를 표시할 TextView 찾아오기
         TextView dateTextView = recipeItemView.findViewById(R.id.koreanlist_time);
         dateTextView.setText(recipe.getDate());
 
-        // 각 뷰에 데이터 설정
         TextView titleTextView = recipeItemView.findViewById(R.id.koreanlist_tittle);
         titleTextView.setText(recipe.getTitle());
 
         TextView hostIdTextView = recipeItemView.findViewById(R.id.koreanlist_hostid);
-        hostIdTextView.setText(getUserEmail(recipe.getUserId()));
+        hostIdTextView.setText(recipe.getUserEmail()); // 이메일 표시
 
-        // 이미지를 표시하는 ImageView를 찾아옴
         ImageView imageView = recipeItemView.findViewById(R.id.koreanlist_img);
-
-        // 레시피 객체에서 이미지 URL 가져오기
         String imageUrl = recipe.getImageUrl();
-
-        // 이미지 다운로드 및 설정
         downloadImage(imageUrl, imageView);
 
-        // 게시글 목록에 새로운 레시피 레이아웃 추가
         koreanMainList.addView(recipeItemView);
 
-        // 제목을 클릭하는 이벤트 처리
-        titleTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 클릭한 게시글의 정보를 수정하는 액티비티로 이동
-                Intent intent = new Intent(Koreanmain.this, list_edit_korean.class);
-                intent.putExtra("recipe", recipe);// 클릭한 게시글의 정보를 전달
-                intent.putExtra("recipeKey", userId);
-                startActivity(intent);
-            }
+        titleTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(Koreanmain.this, list_edit_korean.class);
+            intent.putExtra("recipe", recipe);
+            intent.putExtra("recipeKey", recipeKey);
+            startActivity(intent);
         });
     }
 
@@ -245,7 +241,7 @@ public class Koreanmain extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
             if (email != null && email.contains("@")) {
-                return email.substring(0, email.indexOf("@"));
+                return email.substring(0, email.indexOf("@")); // "@" 이전까지의 부분만 반환
             } else {
                 return "Unknown";
             }
@@ -253,5 +249,6 @@ public class Koreanmain extends AppCompatActivity {
             return "Unknown";
         }
     }
+
 
 }

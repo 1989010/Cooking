@@ -13,8 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,14 +22,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,8 +43,6 @@ public class Add_list_western extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
     private Uri imageUri;
-
-    private LinearLayout WesternMainList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +131,9 @@ public class Add_list_western extends AppCompatActivity {
     // Clear input fields after adding recipe
     private void clearInputFields() {
         imageView.setImageResource(R.drawable.camera);
-        // 버튼의 가시성 변경하지 않음
-        // imageUri를 null로 설정하지 않음
+        titleEditText.setText("");
+        recipeEditText.setText("");
+        imageUri = null;
     }
 
     private void addWesternRecipe() {
@@ -183,12 +178,12 @@ public class Add_list_western extends AppCompatActivity {
                                 String currentDate = getCurrentDate();
 
                                 // Create new recipe object with image URL
-                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate);
+                                Recipe westernRecipe = new Recipe(title, recipe, userId, imageUrl, currentUser.getEmail(), currentDate);
 
                                 // Push recipe to database
                                 String recipeId = databaseReference.push().getKey();
                                 if (recipeId != null) {
-                                    databaseReference.child(recipeId).setValue(koreanRecipe);
+                                    databaseReference.child(recipeId).setValue(westernRecipe);
                                     Toast.makeText(Add_list_western.this, "게시글이 등록되었습니다", Toast.LENGTH_SHORT).show();
 
                                     clearInputFields(); // Clear input fields
@@ -211,6 +206,7 @@ public class Add_list_western extends AppCompatActivity {
                     }
                 });
     }
+
     // 현재 날짜를 문자열로 반환하는 메서드
     private String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());

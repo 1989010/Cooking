@@ -59,31 +59,38 @@ public class LoginActivity extends AppCompatActivity {
                 String strEmail = mEtEmail.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
 
-                // Firebase를 사용하여 이메일과 비밀번호로 로그인 시도
-                mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // 로그인 성공
-                            if (mCheckboxAutoLogin.isChecked()) {
-                                // 자동 로그인 설정이 체크되어 있으면 설정 저장
-                                saveAutoLoginSetting(true);
+                // 아이디 또는 비밀번호가 비어있는지 확인
+                if (strEmail.isEmpty() || strPwd.isEmpty()) {
+                    // 아이디 또는 비밀번호 중 하나라도 비어있으면 로그인 시도하지 않고 사용자에게 알림 표시
+                    Toast.makeText(LoginActivity.this, "아이디와 비밀번호를 모두 입력하세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Firebase를 사용하여 이메일과 비밀번호로 로그인 시도
+                    mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // 로그인 성공
+                                if (mCheckboxAutoLogin.isChecked()) {
+                                    // 자동 로그인 설정이 체크되어 있으면 설정 저장
+                                    saveAutoLoginSetting(true);
+                                } else {
+                                    // 자동 로그인 설정이 체크되어 있지 않으면 설정 삭제
+                                    saveAutoLoginSetting(false);
+                                }
+                                // 로그인 성공 시 MainActivity로 이동
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish(); // 현재 액티비티 종료
                             } else {
-                                // 자동 로그인 설정이 체크되어 있지 않으면 설정 삭제
-                                saveAutoLoginSetting(false);
+                                // 로그인 실패 시 사용자에게 알림
+                                Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                             }
-                            // 로그인 성공 시 MainActivity로 이동
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish(); // 현재 액티비티 종료
-                        } else {
-                            // 로그인 실패 시 사용자에게 알림
-                            Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+                    });
+                }
             }
         });
+
 
         // 회원가입 버튼에 대한 클릭 이벤트 처리
         Button btn_register = findViewById(R.id.login_signup);

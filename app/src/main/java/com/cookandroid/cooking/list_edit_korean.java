@@ -23,6 +23,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,6 +38,7 @@ public class list_edit_korean extends AppCompatActivity {
 
     private Recipe recipe; // 전달받은 게시글의 정보를 저장할 변수
     private String recipeKey; // 게시글의 고유 키를 저장할 변수
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +135,7 @@ public class list_edit_korean extends AppCompatActivity {
 
                     // 새로운 레퍼런스를 생성하여 레시피 추가
                     String newRecipeKey = recipeRef.push().getKey();
-                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate());
+                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate(), recipe.getUserEmail());
 
                     // 기존 레시피 삭제
                     recipeRef.child(recipeKey).removeValue();
@@ -206,4 +209,6 @@ public class list_edit_korean extends AppCompatActivity {
                     }
                 });
     }
+
+
 }

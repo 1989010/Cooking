@@ -41,6 +41,7 @@ public class mylist extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
     private LinearLayout add_mylist_list;
+    private String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +51,18 @@ public class mylist extends AppCompatActivity {
         // Firebase database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("korean_list");
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            currentUserId = currentUser.getUid();
+        } else {
+            // Handle user not logged in scenario
+            finish();
+            return;
+        }
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>내가 쓴 게시글</font>")); // 검은색으로 변경4
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>내가 쓴 게시글</font>")); // 검은색으로 변경
 
         // 액션바에 뒤로가기 버튼 추가
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,7 +72,6 @@ public class mylist extends AppCompatActivity {
 
         // 한식 레시피 목록 불러오기
         loadKoreanRecipes();
-
     }
 
     // 현재 날짜를 문자열로 반환하는 메서드
@@ -71,6 +80,7 @@ public class mylist extends AppCompatActivity {
         Date date = new Date();
         return dateFormat.format(date);
     }
+
     // 뒤로가기 버튼 처리
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -89,9 +99,9 @@ public class mylist extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                if (recipe != null) {
+                if (recipe != null && recipe.getUserId().equals(currentUserId)) {
                     // 레시피를 화면에 추가하는 메서드 호출
-                    addRecipeToLayout(recipe, currentDate, dataSnapshot.getKey()); // 유저 아이디 전달
+                    addRecipeToLayout(recipe, currentDate, dataSnapshot.getKey());
                 }
             }
 
@@ -101,11 +111,12 @@ public class mylist extends AppCompatActivity {
                 loadKoreanRecipes();
             }
 
-
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                // 레시피가 삭제되었을 때 처리
+                removeRecipeFromLayout(dataSnapshot.getKey());
             }
+
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 // Not used
@@ -118,11 +129,8 @@ public class mylist extends AppCompatActivity {
         });
     }
 
-
-
-
     // 레시피를 화면에 추가
-    private void addRecipeToLayout(final Recipe recipe, final String currentDate, String userId) {
+    private void addRecipeToLayout(final Recipe recipe, final String currentDate, String recipeKey) {
         // 새로운 레시피를 표시할 레이아웃 생성
         View recipeItemView = getLayoutInflater().inflate(R.layout.activity_koreanlist, null);
 
@@ -135,7 +143,7 @@ public class mylist extends AppCompatActivity {
         titleTextView.setText(recipe.getTitle());
 
         TextView hostIdTextView = recipeItemView.findViewById(R.id.koreanlist_hostid);
-        hostIdTextView.setText(getUserEmail(recipe.getUserId()));
+        hostIdTextView.setText(getUserEmail(currentUserId));
 
         // 이미지를 표시하는 ImageView를 찾아옴
         ImageView imageView = recipeItemView.findViewById(R.id.koreanlist_img);
@@ -155,11 +163,25 @@ public class mylist extends AppCompatActivity {
             public void onClick(View v) {
                 // 클릭한 게시글의 정보를 수정하는 액티비티로 이동
                 Intent intent = new Intent(mylist.this, list_edit_korean.class);
-                intent.putExtra("recipe", recipe);// 클릭한 게시글의 정보를 전달
-                intent.putExtra("recipeKey", userId);
+                intent.putExtra("recipe", recipe); // 클릭한 게시글의 정보를 전달
+                intent.putExtra("recipeKey", recipeKey);
                 startActivity(intent);
             }
         });
+    }
+
+    // 레이아웃에서 레시피 제거
+    private void removeRecipeFromLayout(String recipeKey) {
+        // 레이아웃에서 해당 레시피를 찾아서 제거하는 로직을 구현해야 합니다.
+        // 이는 데이터셋의 변경에 따라 UI를 업데이트하는 예제입니다.
+        for (int i = 0; i < add_mylist_list.getChildCount(); i++) {
+            View recipeItemView = add_mylist_list.getChildAt(i);
+            TextView titleTextView = recipeItemView.findViewById(R.id.koreanlist_tittle);
+            if (titleTextView.getTag().equals(recipeKey)) {
+                add_mylist_list.removeViewAt(i);
+                break;
+            }
+        }
     }
 
     private void downloadImage(String imageUrl, final ImageView imageView) {

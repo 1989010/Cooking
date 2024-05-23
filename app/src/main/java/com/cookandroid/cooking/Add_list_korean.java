@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -146,6 +148,7 @@ public class Add_list_korean extends AppCompatActivity {
             return;
         }
         final String userId = currentUser.getUid();
+        final String userEmail = currentUser.getEmail(); // 사용자 이메일 추가
 
         // Get input values
         final String title = titleEditText.getText().toString().trim();
@@ -180,7 +183,7 @@ public class Add_list_korean extends AppCompatActivity {
                                 String currentDate = getCurrentDate();
 
                                 // Create new recipe object with image URL and current date
-                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate);
+                                Recipe koreanRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate, userEmail);
 
                                 // Push recipe to database
                                 String recipeId = databaseReference.push().getKey();
