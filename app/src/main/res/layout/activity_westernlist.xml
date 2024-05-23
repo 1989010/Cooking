@@ -23,7 +23,7 @@
             android:layout_marginRight="30dp">
         </ImageView>
 
-        <!-- 요리 제목 출력!-->
+        <!-- 요리 제목 출력 !-->
         <TextView
             android:id="@+id/westernlist_tittle"
             android:layout_width="120dp"
@@ -38,9 +38,9 @@
             android:layout_height="60dp"
             android:orientation="vertical">
 
-            <!-- 게시자 아이디 !-->
+            <!-- 게시글 업로드 시간 !-->
             <TextView
-                android:id="@+id/westernlist_hostid"
+                android:id="@+id/westernlist_time"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:textSize="20dp"
@@ -48,9 +48,9 @@
                 android:gravity="center">
             </TextView>
 
-            <!-- 게시글 업로드 시간!-->
+            <!-- 게시자 아이디 !-->
             <TextView
-                android:id="@+id/westernlist_time"
+                android:id="@+id/westernlist_hostid"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:textSize="20dp"

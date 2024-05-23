@@ -44,6 +44,9 @@ public class Add_list_western extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private Uri imageUri;
 
+    // userEmail 변수 선언
+    private String userEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +61,17 @@ public class Add_list_western extends AppCompatActivity {
         recipeEditText = findViewById(R.id.add_list_western_recipe);
         commitButton = findViewById(R.id.add_list_western_commit);
         cancelButton = findViewById(R.id.add_list_western_cancel);
+
+        // 현재 사용자로부터 이메일 가져오기
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userEmail = currentUser.getEmail();
+        } else {
+            // 로그인이 필요한 경우
+            Toast.makeText(this, "로그인이 필요합니다", Toast.LENGTH_SHORT).show();
+            finish(); // 현재 액티비티 종료
+            return;
+        }
 
         // Set click listener for image select button
         findViewById(R.id.add_list_western_imgbut).setOnClickListener(new View.OnClickListener() {
@@ -90,7 +104,6 @@ public class Add_list_western extends AppCompatActivity {
         // 액션바 배경색 및 제목 색상 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(195, 224, 255)));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>양 식</font>")); // 검은색으로 변경
-
     }
 
     // 뒤로가기 버튼 처리
@@ -178,7 +191,7 @@ public class Add_list_western extends AppCompatActivity {
                                 String currentDate = getCurrentDate();
 
                                 // Create new recipe object with image URL
-                                Recipe westernRecipe = new Recipe(title, recipe, userId, imageUrl, currentUser.getEmail(), currentDate);
+                                Recipe westernRecipe = new Recipe(title, recipe, userId, imageUrl, currentDate, userEmail);
 
                                 // Push recipe to database
                                 String recipeId = databaseReference.push().getKey();
