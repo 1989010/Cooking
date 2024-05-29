@@ -129,6 +129,7 @@ public class Add_list_snack_bar extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 imageView.setImageBitmap(bitmap);
+                imageView.setBackground(null); // Remove the background image
             } catch (IOException e) {
                 e.printStackTrace();
             }
