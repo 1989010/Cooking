@@ -127,7 +127,7 @@ public class Westernmain extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // 한식 레시피 목록 불러오기
+    // 양식 레시피 목록 불러오기
     private void loadWesternRecipes() {
         final String currentDate = getCurrentDate(); // 현재 날짜 가져오기
         databaseReference.addChildEventListener(new ChildEventListener() {
