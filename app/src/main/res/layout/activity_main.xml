@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="자취 요리 마스터"
+            android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:textSize="20dp">
@@ -67,7 +69,8 @@
             android:layout_height="wrap_content"
             android:text="한     식"
             android:textSize="20dp"
-            android:layout_marginLeft="83dp">
+            android:layout_marginLeft="83dp"
+            android:fontFamily="sans-serif-black">
         </TextView>
 
         <!-- 양식 텍스트!-->
@@ -76,7 +79,8 @@
             android:layout_height="wrap_content"
             android:text="양     식"
             android:textSize="20dp"
-            android:layout_marginLeft="83dp">
+            android:layout_marginLeft="83dp"
+            android:fontFamily="sans-serif-black">
         </TextView>
     </LinearLayout>
 
@@ -118,7 +122,8 @@
             android:layout_height="wrap_content"
             android:text="분     식"
             android:textSize="20dp"
-            android:layout_marginLeft="83dp">
+            android:layout_marginLeft="83dp"
+            android:fontFamily="sans-serif-black">
         </TextView>
 
         <!-- 양식 텍스트!-->
@@ -127,14 +132,12 @@
             android:layout_height="wrap_content"
             android:text="샐 러 드"
             android:textSize="20dp"
-            android:layout_marginLeft="83dp">
+            android:layout_marginLeft="83dp"
+            android:fontFamily="sans-serif-black">
         </TextView>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -158,8 +161,10 @@
             android:layout_height="663dp"
             app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.494">
 
         </FrameLayout>
 

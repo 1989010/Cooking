@@ -16,9 +16,17 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:background="@drawable/main"
-            android:layout_marginTop="60dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginTop="30dp"
             android:layout_gravity="center">
+        </TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="자취 요리 마스터"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:textSize="25dp">
         </TextView>
     </LinearLayout>
 
@@ -31,7 +39,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="90dp"
             android:src="@drawable/log_id">
         </ImageView>
 
@@ -55,7 +63,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="90dp"
             android:src="@drawable/log_password">
         </ImageView>
 
@@ -82,7 +90,7 @@
             android:id="@+id/checkbox_auto_login"
             android:layout_width="25dp"
             android:layout_height="20dp"
-            android:layout_marginLeft="100dp">
+            android:layout_marginLeft="90dp">
         </CheckBox>
 
         <TextView
@@ -99,15 +107,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="15dp">
 
         <Button
             android:id="@+id/login_login"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="90dp"
             android:textColor="@color/black"
-            android:background="@color/white"
+            android:background="@drawable/button_background"
             android:text="로그인">
         </Button>
 
@@ -117,7 +125,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="40dp"
             android:textColor="@color/black"
-            android:background="@color/white"
+            android:background="@drawable/button_background"
             android:text="회원가입">
         </Button>
 
