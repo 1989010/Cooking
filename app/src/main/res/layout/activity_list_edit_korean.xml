@@ -19,22 +19,32 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
-
             <!-- 이미지 출력!-->
+
+            <!-- 지우기 !-->
             <ImageView
                 android:id="@+id/list_edit_korean_img"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginLeft="150dp">
-            </ImageView>
+                android:layout_marginLeft="150dp"></ImageView>
 
-            <!-- 지우기 !-->
+            <!-- 이미지 선택버튼!-->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/add_list_korean_imgbut"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom|right"
+                android:textSize="10dp"
+                android:text="이미지 선택">
+            </androidx.appcompat.widget.AppCompatButton>
+
+
             <Button
                 android:id="@+id/list_edit_korean_delete"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="bottom|right"
-                android:layout_marginLeft="91dp"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/delete">
             </Button>
 
