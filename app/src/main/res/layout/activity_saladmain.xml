@@ -33,7 +33,7 @@
             android:layout_marginLeft="173dp"
             android:layout_marginTop="10dp"
             android:textSize="20dp"
-            android:text="셀 러 드">
+            android:text="샐 러 드">
         </TextView>
 
         <!-- 게시글 추가 아이콘 !-->

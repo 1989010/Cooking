@@ -2,6 +2,8 @@ package com.cookandroid.cooking;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -36,7 +38,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login); // 레이아웃 설정
 
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>자취 요리 마스터</font>")); // 검은색으로 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#C3E0FF")));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>자취 요리 마스터</font>")); // 검은색#C3E0FF
 
         // Firebase Authentication 및 데이터베이스 초기화
         mFirebaseAuth = FirebaseAuth.getInstance();

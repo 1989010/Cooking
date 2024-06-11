@@ -3,13 +3,16 @@ package com.cookandroid.cooking;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,15 +30,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
+import java.util.UUID;
 
 public class list_edit_snack_bar extends AppCompatActivity {
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+
     private EditText titleEditText, recipeEditText;
     private ImageView imageView;
-    private Button editButton, deleteButton, commitButton, cancelButton;
+    private Button editButton, deleteButton, commitButton, cancelButton, selectImageButton;
 
     private Recipe recipe; // 전달받은 게시글의 정보를 저장할 변수
     private String recipeKey; // 게시글의 고유 키를 저장할 변수
+    private Uri imageUri; // 선택한 이미지의 URI를 저장할 변수
+    private String imageUrl; // 파이어베이스에 업로드된 이미지 URL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +61,7 @@ public class list_edit_snack_bar extends AppCompatActivity {
         deleteButton = findViewById(R.id.list_edit_snack_bar_delete);
         commitButton = findViewById(R.id.list_edit_snack_bar_commit);
         cancelButton = findViewById(R.id.list_edit_snack_bar_cancel);
+        selectImageButton = findViewById(R.id.add_list_snack_bar_imgbut);
 
         // 전달받은 게시글의 정보 가져오기
         recipe = (Recipe) getIntent().getSerializableExtra("recipe");
@@ -60,7 +72,16 @@ public class list_edit_snack_bar extends AppCompatActivity {
             titleEditText.setText(recipe.getTitle());
             recipeEditText.setText(recipe.getRecipe());
             downloadImage(recipe.getImageUrl(), imageView);
+            imageUrl = recipe.getImageUrl(); // 기존 이미지 URL 저장
         }
+
+        // 이미지 선택 버튼 클릭 리스너 설정
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
 
         // 수정 버튼 클릭 리스너 설정
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +115,7 @@ public class list_edit_snack_bar extends AppCompatActivity {
                                         // 삭제 성공
                                         Log.d(TAG, "게시물이 삭제되었습니다");
                                         Toast.makeText(getApplicationContext(), "게시물이 삭제되었습니다", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(list_edit_snack_bar.this,Snack_barmain.class);
+                                        Intent intent = new Intent(list_edit_snack_bar.this, Snack_barmain.class);
                                         startActivity(intent);
                                         finish(); // 현재 엑티비티 종료
                                     } else {
@@ -111,7 +132,7 @@ public class list_edit_snack_bar extends AppCompatActivity {
             }
         });
 
-// 완료 버튼 클릭 리스너 설정
+        // 완료 버튼 클릭 리스너 설정
         commitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,32 +151,12 @@ public class list_edit_snack_bar extends AppCompatActivity {
                     // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
                     DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("snackbar_list");
 
-                    // 새로운 레퍼런스를 생성하여 레시피 추가
-                    String newRecipeKey = recipeRef.push().getKey();
-                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate(),recipe.getUserEmail());
-
-                    // 기존 레시피 삭제
-                    recipeRef.child(recipeKey).removeValue();
-
-                    // 수정된 내용으로 새로운 레시피 추가
-                    recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // 사용자에게 메시지 표시
-                                    Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(list_edit_snack_bar.this, Snack_barmain.class);
-                                    startActivity(intent);
-                                    finish(); // 현재 엑티비티 종료
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // 업데이트 실패 시 사용자에게 메시지 표시
-                                    Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    // 이미지 업로드 및 레시피 업데이트
+                    if (imageUri != null) {
+                        uploadImageAndSaveRecipe(updatedTitle, updatedRecipe, recipeRef);
+                    } else {
+                        updateRecipe(updatedTitle, updatedRecipe, recipe.getImageUrl(), recipeRef);
+                    }
                 } else {
                     // recipeKey가 null인 경우 처리할 코드 작성
                     Log.e(TAG, "recipeKey is null");
@@ -185,10 +186,84 @@ public class list_edit_snack_bar extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            finish(); // 현재 엑티비티 종료
+            finish(); // 현재 액티비티 종료
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // 파일 선택 창 열기
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            try {
+                imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 이미지 업로드 및 레시피 저장
+    private void uploadImageAndSaveRecipe(final String title, final String recipeText, final DatabaseReference recipeRef) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("snackbar_images/" + UUID.randomUUID().toString());
+        storageRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                updateRecipe(title, recipeText, uri.toString(), recipeRef);
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(list_edit_snack_bar.this, "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    // 레시피 업데이트
+    private void updateRecipe(String title, String recipeText, String imageUrl, DatabaseReference recipeRef) {
+        // 새로운 레퍼런스를 생성하여 레시피 추가
+        String newRecipeKey = recipeRef.push().getKey();
+        Recipe updatedRecipeObject = new Recipe(title, recipeText, recipe.getUserId(), imageUrl, recipe.getDate(), recipe.getUserEmail());
+
+        // 기존 레시피 삭제
+        recipeRef.child(recipeKey).removeValue();
+
+        // 수정된 내용으로 새로운 레시피 추가
+        recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // 사용자에게 메시지 표시
+                        Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(list_edit_snack_bar.this, Snack_barmain.class);
+                        startActivity(intent);
+                        finish(); // 현재 엑티비티 종료
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // 업데이트 실패 시 사용자에게 메시지 표시
+                        Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     // 이미지 다운로드 메소드

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -27,15 +28,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class list_edit_western extends AppCompatActivity {
 
     private EditText titleEditText, recipeEditText;
     private ImageView imageView;
-    private Button editButton, deleteButton, commitButton, cancelButton;
+    private Button editButton, deleteButton, commitButton, cancelButton, selectImageButton;
 
     private Recipe recipe; // 전달받은 게시글의 정보를 저장할 변수
     private String recipeKey; // 게시글의 고유 키를 저장할 변수
+    private Uri imageUri; // 선택한 이미지의 URI를 저장할 변수
+    private String imageUrl; // 파이어베이스에 업로드된 이미지 URL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,7 @@ public class list_edit_western extends AppCompatActivity {
         deleteButton = findViewById(R.id.list_edit_western_delete);
         commitButton = findViewById(R.id.list_edit_western_commit);
         cancelButton = findViewById(R.id.list_edit_western_cancel);
+        selectImageButton = findViewById(R.id.add_list_western_imgbut);
 
         // 전달받은 게시글의 정보 가져오기
         recipe = (Recipe) getIntent().getSerializableExtra("recipe");
@@ -60,7 +65,16 @@ public class list_edit_western extends AppCompatActivity {
             titleEditText.setText(recipe.getTitle());
             recipeEditText.setText(recipe.getRecipe());
             downloadImage(recipe.getImageUrl(), imageView);
+            imageUrl = recipe.getImageUrl(); // 기존 이미지 URL 저장
         }
+
+        // 이미지 선택 버튼 클릭 리스너 설정
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
 
         // 수정 버튼 클릭 리스너 설정
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +125,7 @@ public class list_edit_western extends AppCompatActivity {
             }
         });
 
-// 완료 버튼 클릭 리스너 설정
+        // 완료 버튼 클릭 리스너 설정
         commitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,12 +141,13 @@ public class list_edit_western extends AppCompatActivity {
                 }
 
                 if (recipeKey != null) {
-                    // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
+                    // 이미지를 먼저 업로드하고 Firebase Database에 이미지 URL을 저장
+                    uploadImage();
                     DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list");
 
                     // 새로운 레퍼런스를 생성하여 레시피 추가
                     String newRecipeKey = recipeRef.push().getKey();
-                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate(),recipe.getUserEmail());
+                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), imageUrl, recipe.getDate(), recipe.getUserEmail());
 
                     // 기존 레시피 삭제
                     recipeRef.child(recipeKey).removeValue();
@@ -205,4 +220,55 @@ public class list_edit_western extends AppCompatActivity {
                     }
                 });
     }
+
+    // 이미지 업로드 메소드
+    private void uploadImage() {
+        if (imageUri != null) {
+            // Firebase Storage에 이미지 업로드
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/" + System.currentTimeMillis() + ".jpg");
+
+            storageRef.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // 이미지 업로드 성공 시 이미지 다운로드 URL 가져오기
+                            Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
+                            downloadUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    // 이미지 다운로드 URL 저장
+                                    imageUrl = uri.toString();
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // 업로드 실패 시 메시지 표시
+                            Toast.makeText(getApplicationContext(), "이미지 업로드에 실패했습니다", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
+
+    // 이미지 선택 메소드
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    // 선택된 이미지 가져오기
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            imageView.setImageURI(imageUri);
+        }
+    }
 }
+

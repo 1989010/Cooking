@@ -3,13 +3,16 @@ package com.cookandroid.cooking;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,15 +30,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
 
 public class list_edit_salad extends AppCompatActivity {
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+
     private EditText titleEditText, recipeEditText;
     private ImageView imageView;
-    private Button editButton, deleteButton, commitButton, cancelButton;
+    private Button editButton, deleteButton, commitButton, cancelButton, selectImageButton;
 
     private Recipe recipe; // 전달받은 게시글의 정보를 저장할 변수
     private String recipeKey; // 게시글의 고유 키를 저장할 변수
+    private Uri imageUri; // 선택한 이미지의 URI를 저장할 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,7 @@ public class list_edit_salad extends AppCompatActivity {
         deleteButton = findViewById(R.id.list_edit_salad_delete);
         commitButton = findViewById(R.id.list_edit_salad_commit);
         cancelButton = findViewById(R.id.list_edit_salad_cancel);
+        selectImageButton = findViewById(R.id.add_list_salad_imgbut);
 
         // 전달받은 게시글의 정보 가져오기
         recipe = (Recipe) getIntent().getSerializableExtra("recipe");
@@ -111,7 +121,15 @@ public class list_edit_salad extends AppCompatActivity {
             }
         });
 
-// 완료 버튼 클릭 리스너 설정
+        // 이미지 선택 버튼 클릭 리스너 설정
+        selectImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+
+        // 완료 버튼 클릭 리스너 설정
         commitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,35 +145,13 @@ public class list_edit_salad extends AppCompatActivity {
                 }
 
                 if (recipeKey != null) {
-                    // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
-                    DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("salad_list");
-
-                    // 새로운 레퍼런스를 생성하여 레시피 추가
-                    String newRecipeKey = recipeRef.push().getKey();
-                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate(),recipe.getUserEmail());
-
-                    // 기존 레시피 삭제
-                    recipeRef.child(recipeKey).removeValue();
-
-                    // 수정된 내용으로 새로운 레시피 추가
-                    recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // 사용자에게 메시지 표시
-                                    Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(list_edit_salad.this,Saladmain.class);
-                                    startActivity(intent);
-                                    finish(); // 현재 엑티비티 종료
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // 업데이트 실패 시 사용자에게 메시지 표시
-                                    Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    if (imageUri != null) {
+                        // 이미지가 선택된 경우 업로드 후 URL을 가져와서 데이터베이스에 저장
+                        uploadImageAndSaveRecipe(updatedTitle, updatedRecipe);
+                    } else {
+                        // 이미지가 선택되지 않은 경우 기존 이미지 URL을 사용하여 데이터베이스에 저장
+                        saveRecipeToDatabase(updatedTitle, updatedRecipe, recipe.getImageUrl());
+                    }
                 } else {
                     // recipeKey가 null인 경우 처리할 코드 작성
                     Log.e(TAG, "recipeKey is null");
@@ -189,6 +185,92 @@ public class list_edit_salad extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // 파일 선택기 열기
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            try {
+                imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 이미지 확장자 가져오기
+    private String getFileExtension(Uri uri) {
+        return getContentResolver().getType(uri).split("/")[1];
+    }
+
+    // 이미지 업로드 및 레시피 저장
+    private void uploadImageAndSaveRecipe(final String title, final String recipeText) {
+        if (imageUri != null) {
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference("salad_images")
+                    .child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+
+            storageReference.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String imageUrl = uri.toString();
+                                    saveRecipeToDatabase(title, recipeText, imageUrl);
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "이미지 업로드에 실패했습니다", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
+
+    // 레시피를 데이터베이스에 저장
+    private void saveRecipeToDatabase(String title, String recipeText, String imageUrl) {
+        DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("salad_list");
+
+        // 새로운 레퍼런스를 생성하여 레시피 추가
+        String newRecipeKey = recipeRef.push().getKey();
+        Recipe updatedRecipeObject = new Recipe(title, recipeText, recipe.getUserId(), imageUrl, recipe.getDate(), recipe.getUserEmail());
+
+        // 기존 레시피 삭제
+        recipeRef.child(recipeKey).removeValue();
+
+        // 수정된 내용으로 새로운 레시피 추가
+        recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // 사용자에게 메시지 표시
+                        Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(list_edit_salad.this, Saladmain.class);
+                        startActivity(intent);
+                        finish(); // 현재 엑티비티 종료
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // 업데이트 실패 시 사용자에게 메시지 표시
+                        Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     // 이미지 다운로드 메소드

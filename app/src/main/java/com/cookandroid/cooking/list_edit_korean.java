@@ -3,13 +3,16 @@ package com.cookandroid.cooking;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,21 +27,28 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
 
 public class list_edit_korean extends AppCompatActivity {
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+
     private EditText titleEditText, recipeEditText;
     private ImageView imageView;
-    private Button editButton, deleteButton, commitButton, cancelButton;
+    private Button editButton, deleteButton, commitButton, cancelButton, addImageButton;
+
+    private Uri imageUri; // 선택된 이미지의 Uri
 
     private Recipe recipe; // 전달받은 게시글의 정보를 저장할 변수
     private String recipeKey; // 게시글의 고유 키를 저장할 변수
     private FirebaseAuth mAuth;
+    private StorageReference storageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +63,9 @@ public class list_edit_korean extends AppCompatActivity {
         deleteButton = findViewById(R.id.list_edit_korean_delete);
         commitButton = findViewById(R.id.list_edit_korean_commit);
         cancelButton = findViewById(R.id.list_edit_korean_cancel);
+        addImageButton = findViewById(R.id.add_list_korean_imgbut);
+
+        storageRef = FirebaseStorage.getInstance().getReference("images");
 
         // 전달받은 게시글의 정보 가져오기
         recipe = (Recipe) getIntent().getSerializableExtra("recipe");
@@ -80,7 +93,15 @@ public class list_edit_korean extends AppCompatActivity {
             }
         });
 
-// 삭제 버튼 클릭 리스너 설정
+        // 이미지 선택 버튼 클릭 리스너 설정
+        addImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+
+        // 삭제 버튼 클릭 리스너 설정
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +135,7 @@ public class list_edit_korean extends AppCompatActivity {
             }
         });
 
-// 완료 버튼 클릭 리스너 설정
+        // 완료 버튼 클릭 리스너 설정
         commitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,13 +150,72 @@ public class list_edit_korean extends AppCompatActivity {
                     return;
                 }
 
-                if (recipeKey != null) {
+                // 이미지가 선택되었는지 확인
+                if (imageUri != null) {
+                    // Firebase Storage에 이미지 업로드
+                    StorageReference fileReference = storageRef.child(System.currentTimeMillis()
+                            + "." + getFileExtension(imageUri));
+
+                    fileReference.putFile(imageUri)
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    // 이미지 업로드 성공 시, 다운로드 URL 가져오기
+                                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String imageUrl = uri.toString();
+
+                                            // 수정된 레시피 객체 생성
+                                            Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), imageUrl, recipe.getDate(), recipe.getUserEmail());
+
+                                            // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
+                                            DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("korean_list");
+
+                                            // 새로운 레퍼런스를 생성하여 레시피 추가
+                                            String newRecipeKey = recipeRef.push().getKey();
+
+                                            // 기존 레시피 삭제
+                                            recipeRef.child(recipeKey).removeValue();
+
+                                            // 수정된 내용으로 새로운 레시피 추가
+                                            recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            // 사용자에게 메시지 표시
+                                                            Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
+                                                            Intent intent = new Intent(list_edit_korean.this, Koreanmain.class);
+                                                            startActivity(intent);
+                                                            finish(); // 현재 엑티비티 종료
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            // 업데이트 실패 시 사용자에게 메시지 표시
+                                                            Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(list_edit_korean.this, "이미지 업로드에 실패했습니다", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    // 이미지가 선택되지 않았을 경우 수정된 레시피 객체 생성
+                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate(), recipe.getUserEmail());
+
                     // Firebase 데이터베이스에서 해당 레시피의 레퍼런스 가져오기
                     DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("korean_list");
 
                     // 새로운 레퍼런스를 생성하여 레시피 추가
                     String newRecipeKey = recipeRef.push().getKey();
-                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), recipe.getImageUrl(), recipe.getDate(), recipe.getUserEmail());
 
                     // 기존 레시피 삭제
                     recipeRef.child(recipeKey).removeValue();
@@ -159,13 +239,9 @@ public class list_edit_korean extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                } else {
-                    // recipeKey가 null인 경우 처리할 코드 작성
-                    Log.e(TAG, "recipeKey is null");
                 }
             }
         });
-
 
         // 취소 버튼 클릭 리스너 설정
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +271,32 @@ public class list_edit_korean extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // 파일 선택기 열기
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            try {
+                imageView.setImageBitmap(MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 파일 확장자 가져오기
+    private String getFileExtension(Uri uri) {
+        return getContentResolver().getType(uri).split("/")[1];
+    }
+
     // 이미지 다운로드 메소드
     private void downloadImage(String imageUrl, final ImageView imageView) {
         // Firebase Storage에서 이미지 다운로드
@@ -209,6 +311,4 @@ public class list_edit_korean extends AppCompatActivity {
                     }
                 });
     }
-
-
 }

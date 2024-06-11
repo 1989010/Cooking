@@ -21,6 +21,7 @@
             android:layout_marginTop="10dp">
             <!-- 이미지 출력!-->
 
+
             <!-- 지우기 !-->
             <ImageView
                 android:id="@+id/list_edit_korean_img"
