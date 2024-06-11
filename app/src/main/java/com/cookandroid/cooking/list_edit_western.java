@@ -129,52 +129,8 @@ public class list_edit_western extends AppCompatActivity {
         commitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 수정된 내용 가져오기
-                String updatedTitle = titleEditText.getText().toString().trim();
-                String updatedRecipe = recipeEditText.getText().toString().trim();
-
-                // 수정된 내용이 비어있는지 확인
-                if (updatedTitle.isEmpty() || updatedRecipe.isEmpty()) {
-                    // 제목 또는 레시피 내용이 비어있으면 사용자에게 메시지 표시
-                    Toast.makeText(getApplicationContext(), "제목 또는 레시피 내용을 입력하세요", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (recipeKey != null) {
-                    // 이미지를 먼저 업로드하고 Firebase Database에 이미지 URL을 저장
-                    uploadImage();
-                    DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list");
-
-                    // 새로운 레퍼런스를 생성하여 레시피 추가
-                    String newRecipeKey = recipeRef.push().getKey();
-                    Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), imageUrl, recipe.getDate(), recipe.getUserEmail());
-
-                    // 기존 레시피 삭제
-                    recipeRef.child(recipeKey).removeValue();
-
-                    // 수정된 내용으로 새로운 레시피 추가
-                    recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // 사용자에게 메시지 표시
-                                    Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(list_edit_western.this, Westernmain.class);
-                                    startActivity(intent);
-                                    finish(); // 현재 엑티비티 종료
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // 업데이트 실패 시 사용자에게 메시지 표시
-                                    Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    // recipeKey가 null인 경우 처리할 코드 작성
-                    Log.e(TAG, "recipeKey is null");
-                }
+                // 이미지를 먼저 업로드하고 Firebase Database에 이미지 URL을 저장
+                uploadImageAndSaveData();
             }
         });
 
@@ -270,5 +226,124 @@ public class list_edit_western extends AppCompatActivity {
             imageView.setImageURI(imageUri);
         }
     }
+
+    private void uploadImageAndSaveData() {
+        if (imageUri != null) {
+            // Firebase Storage에 이미지 업로드
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images/" + System.currentTimeMillis() + ".jpg");
+
+            storageRef.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // 이미지 업로드 성공 시 이미지 다운로드 URL 가져오기
+                            Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
+                            downloadUrl.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    // 이미지 다운로드 URL 저장
+                                    imageUrl = uri.toString();
+
+                                    // 수정된 내용 가져오기
+                                    String updatedTitle = titleEditText.getText().toString().trim();
+                                    String updatedRecipe = recipeEditText.getText().toString().trim();
+
+                                    // 수정된 내용이 비어있는지 확인
+                                    if (updatedTitle.isEmpty() || updatedRecipe.isEmpty()) {
+                                        // 제목 또는 레시피 내용이 비어있으면 사용자에게 메시지 표시
+                                        Toast.makeText(getApplicationContext(), "제목 또는 레시피 내용을 입력하세요", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    if (recipeKey != null) {
+                                        DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list");
+
+                                        // 새로운 레퍼런스를 생성하여 레시피 추가
+                                        String newRecipeKey = recipeRef.push().getKey();
+                                        Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), imageUrl, recipe.getDate(), recipe.getUserEmail());
+
+                                        // 기존 레시피 삭제
+                                        recipeRef.child(recipeKey).removeValue();
+
+                                        // 수정된 내용으로 새로운 레시피 추가
+                                        recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        // 사용자에게 메시지 표시
+                                                        Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(list_edit_western.this, Westernmain.class);
+                                                        startActivity(intent);
+                                                        finish(); // 현재 엑티비티 종료
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // 업데이트 실패 시 사용자에게 메시지 표시
+                                                        Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    } else {
+                                        // recipeKey가 null인 경우 처리할 코드 작성
+                                        Log.e(TAG, "recipeKey is null");
+                                    }
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // 업로드 실패 시 메시지 표시
+                            Toast.makeText(getApplicationContext(), "이미지 업로드에 실패했습니다", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            // 이미지가 선택되지 않은 경우
+            // 수정된 내용 가져오기
+            String updatedTitle = titleEditText.getText().toString().trim();
+            String updatedRecipe = recipeEditText.getText().toString().trim();
+
+            // 수정된 내용이 비어있는지 확인
+            if (updatedTitle.isEmpty() || updatedRecipe.isEmpty()) {
+                // 제목 또는 레시피 내용이 비어있으면 사용자에게 메시지 표시
+                Toast.makeText(getApplicationContext(), "제목 또는 레시피 내용을 입력하세요", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (recipeKey != null) {
+                DatabaseReference recipeRef = FirebaseDatabase.getInstance().getReference("western_list");
+
+                // 새로운 레퍼런스를 생성하여 레시피 추가
+                String newRecipeKey = recipeRef.push().getKey();
+                Recipe updatedRecipeObject = new Recipe(updatedTitle, updatedRecipe, recipe.getUserId(), imageUrl, recipe.getDate(), recipe.getUserEmail());
+
+                // 기존 레시피 삭제
+                recipeRef.child(recipeKey).removeValue();
+
+                // 수정된 내용으로 새로운 레시피 추가
+                recipeRef.child(newRecipeKey).setValue(updatedRecipeObject)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // 사용자에게 메시지 표시
+                                Toast.makeText(getApplicationContext(), "게시글이 수정되었습니다", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(list_edit_western.this, Westernmain.class);
+                                startActivity(intent);
+                                finish(); // 현재 엑티비티 종료
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // 업데이트 실패 시 사용자에게 메시지 표시
+                                Toast.makeText(getApplicationContext(), "게시글 수정에 실패했습니다", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }
+    }
 }
+
 
